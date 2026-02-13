@@ -29,11 +29,11 @@ npx skills add testdino-hq/playwright-skill
 Or add individual skill packs:
 
 ```bash
-npx skills add testdino-hq/playwright-skill --path core
-npx skills add testdino-hq/playwright-skill --path ci
-npx skills add testdino-hq/playwright-skill --path pom
-npx skills add testdino-hq/playwright-skill --path migration
-npx skills add testdino-hq/playwright-skill --path playwright-cli
+npx skills add testdino-hq/playwright-skill/core
+npx skills add testdino-hq/playwright-skill/ci
+npx skills add testdino-hq/playwright-skill/pom
+npx skills add testdino-hq/playwright-skill/migration
+npx skills add testdino-hq/playwright-skill/playwright-cli
 ```
 
 ## Skills Overview
