@@ -116,6 +116,22 @@ description: Battle-tested Playwright patterns for E2E, API, component, visual, 
 | Clock & time mocking | [clock-and-time-mocking.md](core/clock-and-time-mocking.md) |
 | Third-party integrations | [third-party-integrations.md](core/third-party-integrations.md) |
 
+### CLI Browser Automation
+
+| What you're doing | Guide |
+|---|---|
+| CLI browser interaction | [playwright-cli/SKILL.md](playwright-cli/SKILL.md) |
+| Core commands (open, click, fill, navigate) | [core-commands.md](playwright-cli/core-commands.md) |
+| Network mocking & interception | [request-mocking.md](playwright-cli/request-mocking.md) |
+| Running custom Playwright code | [running-custom-code.md](playwright-cli/running-custom-code.md) |
+| Multi-session browser management | [session-management.md](playwright-cli/session-management.md) |
+| Cookies, localStorage, auth state | [storage-and-auth.md](playwright-cli/storage-and-auth.md) |
+| Test code generation from CLI | [test-generation.md](playwright-cli/test-generation.md) |
+| Tracing and debugging | [tracing-and-debugging.md](playwright-cli/tracing-and-debugging.md) |
+| Screenshots, video, PDF | [screenshots-and-media.md](playwright-cli/screenshots-and-media.md) |
+| Device & environment emulation | [device-emulation.md](playwright-cli/device-emulation.md) |
+| Complex multi-step workflows | [advanced-workflows.md](playwright-cli/advanced-workflows.md) |
+
 ## Language Note
 
 All guides include TypeScript and JavaScript examples. When the project uses `.js` files or has no `tsconfig.json`, examples are adapted to plain JavaScript.
