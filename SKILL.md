@@ -1,9 +1,9 @@
 ---
-name: playwright-mastery
+name: playwright-skill
 description: Battle-tested Playwright patterns for E2E, API, component, visual, accessibility, and security testing. Covers locators, fixtures, POM, network mocking, auth flows, debugging, CI/CD (GitHub Actions, GitLab, CircleCI, Azure, Jenkins), framework recipes (React, Next.js, Vue, Angular), and migration guides from Cypress/Selenium. TypeScript and JavaScript.
 ---
 
-# Playwright Mastery
+# Playwright Skill
 
 > Opinionated, production-tested Playwright guidance — every pattern includes when (and when *not*) to use it.
 
