@@ -36,6 +36,9 @@ npx skills add testdino-hq/playwright-skill/migration
 npx skills add testdino-hq/playwright-skill/playwright-cli
 ```
 
+> 🎬 Watch the installation guide 
+[![Watch the installation guide](https://img.youtube.com/vi/8dRCJZ_we0s/maxresdefault.jpg)](https://www.youtube.com/watch?v=8dRCJZ_we0s)
+
 ## Skills Overview
 
 | Skill Pack | Guides | What's Covered |
