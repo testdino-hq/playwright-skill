@@ -321,12 +321,46 @@ pipeline {
 | `mcr.microsoft.com/playwright:v1.52.0-jammy` | ~2 GB | Chromium, Firefox, WebKit | Ubuntu 22.04 |
 | Custom slim (Chromium only) | ~800 MB | Chromium | Depends on base |
 
+## Security: Pinning Docker Images to Digest
+
+Version tags like `mcr.microsoft.com/playwright:v1.52.0-noble` are mutable — the tag can be updated to point to a different image layer without changing the tag name. This is a supply-chain risk (W012): you may pull different code than you tested against.
+
+**Best practice**: pin images to their immutable content digest.
+
+```bash
+# Get the digest for a specific tag
+docker pull mcr.microsoft.com/playwright:v1.52.0-noble
+docker inspect --format='{{index .RepoDigests 0}}' mcr.microsoft.com/playwright:v1.52.0-noble
+# e.g. mcr.microsoft.com/playwright@sha256:abc123...
+
+# Or use skopeo (no pull required):
+skopeo inspect docker://mcr.microsoft.com/playwright:v1.52.0-noble | jq '.Digest'
+```
+
+**Use digest-pinned references in CI:**
+
+```yaml
+# Instead of:
+image: mcr.microsoft.com/playwright:v1.52.0-noble
+
+# Pin to digest (example — verify the actual digest for your version):
+image: mcr.microsoft.com/playwright:v1.52.0-noble@sha256:<digest-from-inspect>
+```
+
+```dockerfile
+# Dockerfile
+FROM mcr.microsoft.com/playwright:v1.52.0-noble@sha256:<digest-from-inspect>
+```
+
+> Digest values are specific to the exact image build. Verify the digest from the official Microsoft Artifact Registry (mcr.microsoft.com) before pinning.
+
 ## Anti-Patterns
 
 | Anti-Pattern | Problem | Do This Instead |
 |---|---|---|
 | Image tag doesn't match `@playwright/test` version | Browser binaries incompatible with Playwright library | Always match: `v1.52.0` image for `@playwright/test@1.52.0` |
 | Using `latest` tag | Unpredictable; image updates can break tests | Pin to exact version: `v1.52.0-noble` |
+| Using only a version tag without digest | Tag is mutable; supply-chain risk if image is silently updated | Pin to digest: `playwright:v1.52.0-noble@sha256:<digest>` |
 | Installing browsers inside container at runtime | Wastes 60-90 seconds on every run | Use official image (browsers pre-installed) or build custom image with browsers baked in |
 | Running as non-root without configuring sandbox | Chromium sandbox fails with permission errors | Run as root (`-u root`) or disable sandbox (`--no-sandbox` in launch args) |
 | Bind-mounting `node_modules` from host | Platform-specific binaries (macOS vs Linux) cause crashes | Use anonymous volume: `-v /app/node_modules` |
