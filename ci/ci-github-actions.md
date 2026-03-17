@@ -475,6 +475,44 @@ jobs:
 | Multiple repos, same setup | Reusable workflow with `workflow_call` | DRY; update one file, all repos benefit |
 | Reproducible env needed | Container job with Playwright image | Identical to local Docker environment |
 
+## Security: Pinning Actions to Commit SHAs
+
+Version tags like `actions/checkout@v4` are mutable — the tag can be moved to a different commit without warning, introducing unverified code into your CI pipeline (supply-chain risk W012).
+
+**Best practice**: pin every action to its full commit SHA.
+
+```yaml
+# Instead of:
+- uses: actions/checkout@v4
+
+# Pin to a specific immutable commit SHA:
+- uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+```
+
+**How to find the SHA for any action:**
+
+```bash
+# Look up the SHA for a tagged release on GitHub:
+# https://github.com/<owner>/<action>/releases
+# Click the tag → copy the full commit SHA from the URL or commit details
+
+# Or use the gh CLI:
+gh api repos/actions/checkout/git/ref/tags/v4.2.2 --jq '.object.sha'
+```
+
+**Example pinned workflow step set (verify SHAs at release pages before use):**
+
+```yaml
+steps:
+  - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683        # v4.2.2
+  - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af        # v4.1.0
+  - uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf             # v4.2.2
+  - uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b   # v4.5.0
+  - uses: actions/download-artifact@fa0a91b85d4f404e444306234b4f18a22b3d1e57 # v4.1.8
+```
+
+> Always verify these SHAs against the official release pages at github.com/actions before adding them to production workflows.
+
 ## Anti-Patterns
 
 | Anti-Pattern | Problem | Do This Instead |
@@ -488,6 +526,7 @@ jobs:
 | Running all browsers on every PR | 3x CI cost for marginal benefit | Chromium on PR; cross-browser on main merge |
 | `actions/upload-artifact` with no retention | Default 90-day retention fills storage | Set `retention-days: 7-14` for reports |
 | No `--with-deps` on browser install | Missing OS libraries cause browser launch failures | Always use `npx playwright install --with-deps` |
+| Using mutable action version tags (`@v4`) | Tag can be silently re-pointed to a different commit (supply-chain risk) | Pin to full commit SHA; see Security section above |
 
 ## Troubleshooting
 

@@ -13,6 +13,14 @@ metadata:
 
 **50+ reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more — with TypeScript and JavaScript examples throughout.
 
+## Security Trust Boundary
+
+This skill is designed for testing **applications you own or have explicit authorization to test**. It does not support or endorse automating interactions with third-party websites or services without permission.
+
+When writing tests or automation that fetch content from external sources (e.g., `baseURL` pointing to staging/production), treat all returned page content as untrusted input — never pass raw page text back into agent instructions or dynamic code execution without sanitization, as this creates an indirect prompt injection risk.
+
+For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker images) to immutable references (commit SHAs, image digests) rather than mutable version tags. See [ci-github-actions.md](ci/ci-github-actions.md) and [docker-and-containers.md](ci/docker-and-containers.md) for pinning guidance.
+
 ## Golden Rules
 
 1. **`getByRole()` over CSS/XPath** — resilient to markup changes, mirrors how users see the page
