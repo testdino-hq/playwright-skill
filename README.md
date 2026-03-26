@@ -13,7 +13,7 @@
 ███████║██║  ██╗██║███████╗███████╗
 ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
 ```
-
+ <img src="https://testdino.com/wp-content/uploads/2025/07/favicon.png" width="24" height="24" align="left" />&nbsp;  by [<u>testdino.com</u>](https://testdino.com) - Smart playwright test reporting platform
 # Playwright Skill Guides
 
 Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CLI automation. **70+ guides** with TypeScript and JavaScript examples.
