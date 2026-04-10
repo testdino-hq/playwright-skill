@@ -17,6 +17,13 @@ playwright-cli -s=public snapshot
 # List all active sessions
 playwright-cli list
 
+# Attach to a browser bound from Playwright code (Playwright 1.59+)
+playwright-cli attach checkout-debug
+playwright-cli -s=checkout-debug snapshot
+
+# Open the dashboard for bound browsers
+playwright-cli show
+
 # Clean up
 playwright-cli -s=auth close
 playwright-cli close-all             # Close everything
@@ -109,6 +116,41 @@ playwright-cli -s=mysession delete-data
 # Delete default session data
 playwright-cli delete-data
 ```
+
+## Bound Browser Sessions (Playwright 1.59+)
+
+Playwright 1.59 introduced `browser.bind()`, which lets a browser launched from Playwright code be shared with `playwright-cli`, MCP servers, and other Playwright clients.
+
+**Bind a browser from Playwright code**
+
+```typescript
+import { chromium } from 'playwright';
+
+async function main() {
+  const browser = await chromium.launch({ headless: false });
+  const { endpoint } = await browser.bind('checkout-debug', {
+    workspaceDir: process.cwd(),
+  });
+
+  console.log(`Bound browser endpoint: ${endpoint}`);
+}
+
+main();
+```
+
+**Attach from `playwright-cli`**
+
+```bash
+playwright-cli attach checkout-debug
+playwright-cli -s=checkout-debug snapshot
+playwright-cli -s=checkout-debug click e4
+```
+
+### Dashboard Visibility
+
+`playwright-cli show` opens the dashboard for bound browsers so you can see active sessions, inspect status, and jump into the ones that matter.
+
+For Playwright Test workflows, set `PLAYWRIGHT_DASHBOARD=1` before running tests if you want test browsers to appear in the dashboard as well.
 
 ## Persistent Profiles
 

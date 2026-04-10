@@ -15,7 +15,10 @@ npx playwright test --retries=3
 # Run single test in isolation to rule out state leaks
 npx playwright test tests/checkout.spec.ts --grep "adds item" --workers=1
 
-# Run with tracing on every attempt for comparison
+# Best Playwright 1.59+ trace mode for flaky tests
+npx playwright test --retries=3 --trace=retain-on-failure-and-retries
+
+# Run with tracing on every attempt only when you need maximum detail
 npx playwright test --retries=3 --trace=on
 
 # Run in fully parallel mode to expose isolation issues
@@ -75,6 +78,29 @@ Test is flaky
 |                       - File system or network instability
 |                       - Flaky third-party service
 ```
+
+### Playwright 1.59 Trace Retention Strategy
+
+For flaky tests on Playwright 1.59+, prefer `trace: 'retain-on-failure-and-retries'` over `trace: 'on'` when you are comparing failed attempts with passing retries. It keeps the runs that matter without storing every passing trace in the suite.
+
+```typescript
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  retries: process.env.CI ? 2 : 0,
+  use: {
+    trace: process.env.CI
+      ? 'retain-on-failure-and-retries'
+      : 'on-first-retry',
+  },
+});
+```
+
+This is especially effective when a test fails once, passes on retry, and you need to diff those attempts in Trace Viewer.
+
+### Use UI Mode and Trace Viewer Filters
+
+When debugging a noisy trace or a long UI Mode run, use the newer filtering options to focus on the failing test, relevant actions, or a specific assertion sequence instead of scanning the full event stream manually.
 
 ### Fix: Timing and Async Issues
 

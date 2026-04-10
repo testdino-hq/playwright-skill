@@ -21,9 +21,72 @@ const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).a
 
 // Exclude known issues during migration
 const results = await new AxeBuilder({ page }).disableRules(['color-contrast']).analyze();
+
+// Playwright 1.59+: capture the accessibility tree for the whole page
+const pageTree = await page.ariaSnapshot();
+
+// Or scope it to one region
+const dialogTree = await page.getByRole('dialog', { name: 'Checkout' }).ariaSnapshot();
 ```
 
 ## Patterns
+
+### ARIA Snapshots For Structure Checks
+
+**Use when**: You want to verify the accessibility tree shape of a page, region, dialog, or widget in addition to running axe.
+**Avoid when**: You only need rule-based WCAG checks. Start with axe for broad coverage, then use ARIA snapshots for high-value structure assertions.
+
+Playwright 1.59 adds `page.ariaSnapshot()` as a shortcut for capturing the page-level accessibility tree, and expands `locator.ariaSnapshot()` with more control over depth and snapshot mode. This is useful for menus, dialogs, composite widgets, and other components where semantic structure matters as much as raw DOM shape.
+
+**TypeScript**
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('checkout dialog exposes the expected accessibility structure', async ({ page }) => {
+  await page.goto('/checkout');
+  await page.getByRole('button', { name: 'Open checkout' }).click();
+
+  const dialogTree = await page
+    .getByRole('dialog', { name: 'Checkout' })
+    .ariaSnapshot();
+
+  expect(dialogTree).toContain('heading "Checkout"');
+  expect(dialogTree).toContain('button "Apply coupon"');
+});
+```
+
+**Snapshot options**
+
+When the full accessibility tree is too noisy, use the newer options to limit the result to the level of detail you actually care about.
+
+```typescript
+const menuTree = await page.getByRole('menu', { name: 'Account' }).ariaSnapshot({
+  depth: 2,
+});
+
+const summaryTree = await page.getByRole('dialog', { name: 'Checkout' }).ariaSnapshot({
+  mode: 'summary',
+});
+```
+
+Use smaller snapshots for stable assertions. Deep full-tree snapshots are powerful, but they can become brittle if the component structure changes often.
+
+**JavaScript**
+```javascript
+const { test, expect } = require('@playwright/test');
+
+test('checkout dialog exposes the expected accessibility structure', async ({ page }) => {
+  await page.goto('/checkout');
+  await page.getByRole('button', { name: 'Open checkout' }).click();
+
+  const dialogTree = await page
+    .getByRole('dialog', { name: 'Checkout' })
+    .ariaSnapshot();
+
+  expect(dialogTree).toContain('heading "Checkout"');
+  expect(dialogTree).toContain('button "Apply coupon"');
+});
+```
 
 ### axe-core/playwright Integration
 

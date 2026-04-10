@@ -115,6 +115,41 @@ module.exports = defineConfig({
 });
 ```
 
+### In-Place State Refresh With `setStorageState()` (Playwright 1.59+)
+
+**Use when**: You already have a browser context open and want to replace its cookies and local storage without destroying the context and creating a new one.
+**Avoid when**: Starting a brand-new isolated context is simpler, or when the test itself is validating the login flow from scratch.
+
+Playwright 1.59 added `browserContext.setStorageState()`, which clears the current cookies, local storage, and IndexedDB state and applies a new storage snapshot in-place.
+
+**TypeScript**
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('swap to a different authenticated state without recreating the context', async ({ page, context }) => {
+  await page.goto('/dashboard');
+
+  await context.setStorageState('.auth/admin.json');
+  await page.reload();
+
+  await expect(page.getByRole('heading', { name: 'Admin dashboard' })).toBeVisible();
+});
+```
+
+**JavaScript**
+```javascript
+const { test, expect } = require('@playwright/test');
+
+test('swap to a different authenticated state without recreating the context', async ({ page, context }) => {
+  await page.goto('/dashboard');
+
+  await context.setStorageState('.auth/admin.json');
+  await page.reload();
+
+  await expect(page.getByRole('heading', { name: 'Admin dashboard' })).toBeVisible();
+});
+```
+
 ### Global Setup Authentication
 
 **Use when**: You want to authenticate once before the entire test suite runs, then reuse that session everywhere. The standard Playwright-recommended approach.
