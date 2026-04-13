@@ -95,6 +95,29 @@ export default defineConfig({
 });
 ```
 
+### Pattern 2b: Trace Retention For Flaky Tests (Playwright 1.59+)
+
+**Use when**: A test sometimes fails and sometimes passes on retry, and you need artifacts from both attempts to compare behavior.
+**Avoid when**: Trace size matters more than diagnosis depth. In that case, keep using `'on-first-retry'`.
+
+Playwright 1.59 adds a new trace mode, `'retain-on-failure-and-retries'`, which records each run and keeps all traces when any attempt fails.
+
+```ts
+// playwright.config.ts
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  retries: process.env.CI ? 2 : 0,
+  use: {
+    trace: process.env.CI
+      ? 'retain-on-failure-and-retries'
+      : 'on-first-retry',
+  },
+});
+```
+
+This is excellent for flaky-test analysis because you can compare the failing run against a passing retry instead of guessing what changed between attempts.
+
 ### Pattern 3: Custom Reporter
 
 **Use when**: Built-in reporters don't meet your needs -- you want Slack notifications, database logging, or custom dashboards.

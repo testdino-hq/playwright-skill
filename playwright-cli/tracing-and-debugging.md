@@ -13,6 +13,18 @@ playwright-cli click e4
 playwright-cli fill e7 "test"
 playwright-cli tracing-stop
 
+# Attach to a paused Playwright test (Playwright 1.59+)
+npx playwright test --debug=cli
+playwright-cli attach my-session
+playwright-cli --session=my-session step-over
+
+# Inspect traces from the terminal (Playwright 1.59+)
+npx playwright trace open traces/trace.zip
+npx playwright trace actions
+npx playwright trace action 9
+npx playwright trace snapshot 9 --name after
+npx playwright trace close
+
 # View console messages
 playwright-cli console                # All levels
 playwright-cli console error          # Errors only
@@ -93,6 +105,48 @@ The Trace Viewer shows:
 - **Network**: Waterfall view of all requests
 - **Console**: Log messages with timestamps
 - **Source**: The code that triggered each action
+
+### CLI Trace Analysis (Playwright 1.59+)
+
+When you are working over SSH, inside an agent loop, or on a machine without a GUI, the `npx playwright trace` commands let you inspect traces directly from the terminal.
+
+```bash
+# Open a trace archive
+npx playwright trace open test-results/checkout-chromium/trace.zip
+
+# List recorded actions
+npx playwright trace actions
+npx playwright trace actions --grep="expect"
+
+# Inspect one action in detail
+npx playwright trace action 9
+
+# Render the before/after snapshot for a specific action
+npx playwright trace snapshot 9 --name before
+npx playwright trace snapshot 9 --name after
+
+# Close the current trace session
+npx playwright trace close
+```
+
+Use the GUI Trace Viewer when you want the richest visual timeline. Use the CLI trace tools when you need quick answers in a terminal-first workflow.
+
+## Agent Debugging With `--debug=cli` (Playwright 1.59+)
+
+Playwright 1.59 adds a debugger flow designed for coding agents and terminal-based debugging. Start the test runner with `--debug=cli`, attach with `playwright-cli`, and then step through the paused test from the command line.
+
+```bash
+# Terminal 1: launch the paused test
+npx playwright test --debug=cli
+
+# Terminal 2: attach using the session id printed by Playwright
+playwright-cli attach tw-87b59e
+playwright-cli --session=tw-87b59e snapshot
+playwright-cli --session=tw-87b59e step-over
+playwright-cli --session=tw-87b59e console error
+```
+
+This is especially useful when an agent needs to inspect a paused browser, try locators, or compare page state without opening the full inspector UI.
 
 ## Console Monitoring
 

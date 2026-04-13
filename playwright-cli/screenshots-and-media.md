@@ -254,6 +254,70 @@ playwright-cli pdf --filename=output.pdf
 
 Record browser sessions as WebM video files.
 
+For simple "start recording now, stop later" flows, `video-start` and `video-stop` remain fine. For Playwright 1.59+ workflows that need precise start and stop control, action callouts, chapter titles, or richer review videos, prefer `page.screencast`.
+
+### Screencast API (Playwright 1.59+)
+
+Use `page.screencast` when you need a richer artifact than plain video recording.
+
+```bash
+# Start a screencast with an explicit output path
+playwright-cli run-code "async page => {
+  await page.screencast.start({
+    path: 'recordings/checkout-walkthrough.webm',
+    size: { width: 1280, height: 800 }
+  });
+  return 'Screencast started';
+}"
+
+# Stop and finalize the file
+playwright-cli run-code "async page => {
+  await page.screencast.stop();
+  return 'Screencast saved';
+}"
+```
+
+### Annotated Screencasts
+
+Playwright 1.59 adds built-in action annotations and chapter overlays, which are ideal for demos, debugging, and agent receipts.
+
+```bash
+playwright-cli run-code "async page => {
+  await page.screencast.start({ path: 'recordings/annotated-demo.webm' });
+  await page.screencast.showActions({
+    position: 'top-right',
+    duration: 900,
+    fontSize: 20
+  });
+  await page.screencast.showChapter('Checkout flow', {
+    description: 'Verify coupon entry and updated totals',
+    duration: 1500
+  });
+  return 'Annotated screencast started';
+}"
+
+# Perform the flow with normal playwright-cli commands here
+# ...
+
+playwright-cli run-code "async page => {
+  await page.screencast.showChapter('Done', {
+    description: 'Coupon applied and totals updated'
+  });
+  await page.screencast.stop();
+  return 'Annotated screencast saved';
+}"
+```
+
+### When To Use Screencast vs Video Recording
+
+| Need | Best choice |
+|------|-------------|
+| Fast ad-hoc browser capture from the CLI | `video-start` / `video-stop` |
+| Precise start and stop around one flow | `page.screencast.start()` / `stop()` |
+| Action callouts during recording | `page.screencast.showActions()` |
+| Chapter titles for walkthrough videos | `page.screencast.showChapter()` |
+| Agent evidence / review receipts | `page.screencast` |
+
 ### Basic Recording
 
 ```bash

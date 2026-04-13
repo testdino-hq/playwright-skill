@@ -17,6 +17,85 @@ page.getByTestId('checkout-summary')                 // 7. Test ID (last semanti
 page.locator('css=.legacy-widget >> internal:role=button') // 8. CSS/XPath (last resort)
 ```
 
+## Playwright 1.59 Locator Helpers
+
+Playwright 1.59 added two useful locator-discovery helpers:
+
+- Interactive locator picking for debugging and exploration
+- `locator.normalize()` for rewriting brittle selectors toward Playwright best practices
+
+Use these during debugging, refactors, and authoring. Do not treat them as a substitute for thinking through the most user-facing locator yourself. The best production locator is still usually `getByRole()`, `getByLabel()`, or `getByTestId()` when semantics are unavailable.
+
+### `page.pickLocator()` For Interactive Discovery
+
+**Use when**: You are exploring a page, debugging a selector, or migrating a legacy suite and want Playwright to suggest a locator for the element under your cursor.
+**Avoid when**: Writing final production tests without review. Treat the picked locator as a starting point, not the final answer.
+
+**TypeScript**
+```typescript
+import { test } from '@playwright/test';
+
+test('pick a locator during debugging', async ({ page }) => {
+  await page.goto('/checkout');
+
+  const picked = await page.pickLocator();
+  console.log(picked);
+
+  await page.cancelPickLocator();
+});
+```
+
+**JavaScript**
+```javascript
+const { test } = require('@playwright/test');
+
+test('pick a locator during debugging', async ({ page }) => {
+  await page.goto('/checkout');
+
+  const picked = await page.pickLocator();
+  console.log(picked);
+
+  await page.cancelPickLocator();
+});
+```
+
+Review the suggested locator before keeping it. Prefer rewriting it to `getByRole()` or another semantic locator if that makes the test clearer.
+
+### `locator.normalize()` For Refactors
+
+**Use when**: You inherit brittle CSS/XPath-heavy locators and want Playwright to suggest a more idiomatic form during cleanup work.
+**Avoid when**: You have not yet thought through the element's semantics. A normalized locator can still be less clear than a hand-written role or label locator.
+
+**TypeScript**
+```typescript
+import { test } from '@playwright/test';
+
+test('normalize a legacy locator', async ({ page }) => {
+  await page.goto('/settings');
+
+  const legacy = page.locator('.settings-panel button.save');
+  const normalized = await legacy.normalize();
+
+  console.log(normalized);
+});
+```
+
+**JavaScript**
+```javascript
+const { test } = require('@playwright/test');
+
+test('normalize a legacy locator', async ({ page }) => {
+  await page.goto('/settings');
+
+  const legacy = page.locator('.settings-panel button.save');
+  const normalized = await legacy.normalize();
+
+  console.log(normalized);
+});
+```
+
+Use `normalize()` as a refactoring assistant. The final test should still reflect user intent, not just "whatever selector Playwright could derive."
+
 ## Patterns
 
 ### Role-Based Locators (Default Choice)

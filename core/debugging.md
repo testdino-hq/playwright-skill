@@ -9,6 +9,7 @@
 | UI Mode | `npx playwright test --ui` | Interactive exploration, visual timeline, re-running tests |
 | Playwright Inspector | `PWDEBUG=1 npx playwright test` | Step-through debugging, selector playground |
 | Trace Viewer | `npx playwright show-trace trace.zip` | Post-mortem CI failure analysis |
+| CLI debugger | `npx playwright test --debug=cli` | Agent workflows, SSH sessions, terminal-first debugging |
 | Headed mode | `npx playwright test --headed` | Watching the browser during test execution |
 | Slow motion | `npx playwright test --headed --slow-mo=500` | Visually following fast interactions |
 | `page.pause()` | Insert in test code | Pausing at an exact point to inspect state |
@@ -62,6 +63,8 @@ export default defineConfig({
   },
 });
 ```
+
+For flaky tests on Playwright 1.59+, consider `trace: 'retain-on-failure-and-retries'` so you can compare the failing attempt with any passing retries instead of keeping only one trace artifact.
 
 **JavaScript**
 ```javascript
@@ -186,6 +189,39 @@ module.exports = defineConfig({
 3. **Network tab** — every HTTP request with status, timing, request/response bodies
 4. **Source tab** — test source code highlighting the failing line
 5. **Call tab** — exact arguments and return values of each Playwright call
+
+### Pattern 3b: CLI Debugger for Agent Workflows
+
+**Use when**: You are debugging from a terminal, remote machine, or coding-agent workflow where opening the full inspector is awkward.
+**Avoid when**: You want the richest interactive UI locally; use UI Mode or Inspector for that.
+
+```bash
+# Start a paused debugging session
+npx playwright test --debug=cli
+
+# Attach from another terminal using the session id printed by Playwright
+playwright-cli attach tw-87b59e
+playwright-cli --session=tw-87b59e snapshot
+playwright-cli --session=tw-87b59e step-over
+playwright-cli --session=tw-87b59e console error
+```
+
+This flow is ideal when an agent or teammate needs to inspect the live browser state without leaving the command line.
+
+### Pattern 3c: Terminal Trace Analysis
+
+**Use when**: You have a trace archive but need fast answers from a shell, CI worker, or remote box.
+**Avoid when**: You need the full visual timeline; use Trace Viewer for that.
+
+```bash
+npx playwright trace open test-results/checkout-chromium/trace.zip
+npx playwright trace actions --grep="expect"
+npx playwright trace action 9
+npx playwright trace snapshot 9 --name after
+npx playwright trace close
+```
+
+This is especially helpful for agentic repair loops and flaky-test triage, where opening a GUI trace viewer adds friction.
 
 ### Pattern 4: Headed Mode with Slow Motion
 
