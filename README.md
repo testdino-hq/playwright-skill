@@ -13,8 +13,27 @@
 ███████║██║  ██╗██║███████╗███████╗
 ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝
 ```
- <img src="https://testdino.com/images/logo-icon-black.svg" width="24" height="24" align="left" />by [testdino.com](https://testdino.com) - Purpose built for debugging, managing, and improving Playwright tests with AI
-# Playwright Skill Guides
+<p align="left">
+  <picture>
+    <source
+      srcset="https://testdino.com/images/logo-icon-white.svg"
+      media="(prefers-color-scheme: dark)"
+    />
+    <source
+      srcset="https://testdino.com/images/logo-icon-black.svg"
+      media="(prefers-color-scheme: light)"
+    />
+    <img
+      src="https://testdino.com/images/logo-icon-black.svg"
+      width="24"
+      height="24"
+      alt="TestDino Logo"
+      align="center"
+    />
+  </picture> by
+  <a href="https://testdino.com">testdino.com</a>
+  — Purpose built for debugging, managing, and improving Playwright tests with AI
+</p># Playwright Skill Guides
 
 Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CLI automation. **70+ guides** with TypeScript and JavaScript examples.
 
