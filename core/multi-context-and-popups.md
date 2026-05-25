@@ -477,6 +477,61 @@ test('admin sees user changes in real-time', async ({ browser }) => {
 });
 ```
 
+### Observing New Contexts and Mirrored Events (Playwright 1.60+)
+
+**Use when**: You're orchestrating many contexts/pages (multi-user suites, agent-driven sessions) and want a single place to react when a new context is created, or to listen for page lifecycle events at the context level rather than wiring a listener onto every page.
+**Avoid when**: You have one context and one page — listen on the `page` directly.
+
+Playwright 1.60 adds `browser.on('context')`, fired whenever a new context is created, and makes `BrowserContext` mirror its pages' lifecycle events (`download`, frame events, page close/load). This means you can attach logging or diagnostics once at the browser/context level.
+
+**TypeScript**
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('log every context and download across the browser', async ({ browser }) => {
+  // Fires for each new context created on this browser (1.60+)
+  browser.on('context', (context) => {
+    console.log('New context created');
+
+    // Context mirrors page-level events — no per-page wiring needed (1.60+)
+    context.on('download', (download) => {
+      console.log('Download started:', download.suggestedFilename());
+    });
+  });
+
+  const userA = await browser.newContext();
+  const userB = await browser.newContext();
+
+  const pageA = await userA.newPage();
+  await pageA.goto('/reports');
+  await pageA.getByRole('button', { name: 'Export CSV' }).click();
+
+  await userA.close();
+  await userB.close();
+});
+```
+
+**JavaScript**
+```javascript
+const { test } = require('@playwright/test');
+
+test('log every context and download across the browser', async ({ browser }) => {
+  browser.on('context', (context) => {
+    context.on('download', (download) => {
+      console.log('Download started:', download.suggestedFilename());
+    });
+  });
+
+  const ctx = await browser.newContext();
+  const page = await ctx.newPage();
+  await page.goto('/reports');
+  await page.getByRole('button', { name: 'Export CSV' }).click();
+  await ctx.close();
+});
+```
+
+> Context-level mirrored events are for cross-cutting concerns (logging, artifacts, counters). For assertions tied to a specific page, still listen on that `page`.
+
 ## Decision Guide
 
 | Scenario | Approach | Why |

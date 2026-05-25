@@ -864,6 +864,27 @@ test.describe('Card component', () => {
 });
 ```
 
+### 11. Asserting Pseudo-Element Styles Instead of a Screenshot (Playwright 1.60+)
+
+**Use when**: You only care about one or two computed styles on a `::before` / `::after` pseudo-element (an icon glyph, a required asterisk, a status dot color). A targeted CSS assertion is faster and far less brittle than a pixel diff.
+**Avoid when**: The thing you're verifying is genuinely visual (layout, gradients, shadows). Keep using `toHaveScreenshot()` there.
+
+Playwright 1.60's `pseudo` option on `toHaveCSS()` lets you check pseudo-element styles without a screenshot baseline to maintain:
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('status badge renders a green dot via ::before', async ({ page }) => {
+  await page.goto('/orders');
+
+  const badge = page.getByTestId('status-online');
+  // No snapshot file to update — assert the computed style directly
+  await expect(badge).toHaveCSS('background-color', 'rgb(22, 163, 74)', { pseudo: '::before' });
+});
+```
+
+This complements visual snapshots: use it to lock down specific pseudo-element styling that would otherwise force a full screenshot. See [core/assertions-and-waiting.md](assertions-and-waiting.md#asserting-pseudo-element-styles-tohavecss-pseudo-playwright-160).
+
 ## Decision Guide
 
 | Scenario | Recommended Approach | Why |

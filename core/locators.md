@@ -17,7 +17,9 @@ page.getByTestId('checkout-summary')                 // 7. Test ID (last semanti
 page.locator('css=.legacy-widget >> internal:role=button') // 8. CSS/XPath (last resort)
 ```
 
-## Playwright 1.59 Locator Helpers
+## Recent Locator Helpers (Playwright 1.59+)
+
+> Playwright 1.60 also adds a `description` option to `getByRole()` for disambiguating controls with the same name — see [Role-Based Locators](#disambiguating-by-accessible-description-description-playwright-160) below.
 
 Playwright 1.59 added two useful locator-discovery helpers:
 
@@ -172,6 +174,34 @@ test('role-based locators cover most UI elements', async ({ page }) => {
   await page.getByRole('button', { name: 'Log', exact: true }).click();
 });
 ```
+
+#### Disambiguating by accessible description (`description`, Playwright 1.60+)
+
+When two controls share the same accessible name but differ by their accessible *description* (`aria-describedby` / `aria-description`), Playwright 1.60's `description` option on `getByRole()` (and the other `getBy*` roles) targets the right one without falling back to CSS.
+
+**TypeScript**
+```typescript
+// Two "Delete" buttons, distinguished by their helper text / aria-describedby
+await page
+  .getByRole('button', { name: 'Delete', description: 'Permanently removes this project' })
+  .click();
+
+// Pair it with `exact` for tight matching
+await page.getByRole('link', {
+  name: 'Download',
+  description: 'PDF, 2.3 MB',
+  exact: true,
+}).click();
+```
+
+**JavaScript**
+```javascript
+await page
+  .getByRole('button', { name: 'Delete', description: 'Permanently removes this project' })
+  .click();
+```
+
+Reach for `description` only when `name` + `role` (and `exact`) can't disambiguate — it's a precise tool, not a default.
 
 ### Label-Based Locators
 

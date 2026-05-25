@@ -235,6 +235,55 @@ test('handle WebSocket server error gracefully', async ({ page }) => {
 });
 ```
 
+#### Inspecting Requested Subprotocols (`webSocketRoute.protocols()`, Playwright 1.60+)
+
+**Use when**: Your client negotiates a WebSocket subprotocol (e.g. `graphql-transport-ws`, `wamp`, a versioned protocol string) and you want to assert it sent the right one, or branch your mock based on it.
+**Avoid when**: Your app doesn't use subprotocols — there's nothing to inspect.
+
+Playwright 1.60 adds `webSocketRoute.protocols()`, returning the array of subprotocols the client requested during the handshake.
+
+**TypeScript**
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('client requests the graphql-ws subprotocol', async ({ page }) => {
+  await page.routeWebSocket('**/graphql', (ws) => {
+    // Assert the client negotiated the expected subprotocol
+    expect(ws.protocols()).toContain('graphql-transport-ws');
+
+    ws.onMessage((message) => {
+      const data = JSON.parse(message);
+      if (data.type === 'connection_init') {
+        ws.send(JSON.stringify({ type: 'connection_ack' }));
+      }
+    });
+  });
+
+  await page.goto('/explorer');
+  await expect(page.getByText('Connected')).toBeVisible();
+});
+```
+
+**JavaScript**
+```javascript
+const { test, expect } = require('@playwright/test');
+
+test('client requests the graphql-ws subprotocol', async ({ page }) => {
+  await page.routeWebSocket('**/graphql', (ws) => {
+    expect(ws.protocols()).toContain('graphql-transport-ws');
+    ws.onMessage((message) => {
+      const data = JSON.parse(message);
+      if (data.type === 'connection_init') {
+        ws.send(JSON.stringify({ type: 'connection_ack' }));
+      }
+    });
+  });
+
+  await page.goto('/explorer');
+  await expect(page.getByText('Connected')).toBeVisible();
+});
+```
+
 ### Forwarding with Modification (Man-in-the-Middle)
 
 **Use when**: You want to connect to the real server but intercept, modify, or inject messages.

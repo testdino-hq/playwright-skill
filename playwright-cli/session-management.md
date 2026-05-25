@@ -152,6 +152,37 @@ playwright-cli -s=checkout-debug click e4
 
 For Playwright Test workflows, set `PLAYWRIGHT_DASHBOARD=1` before running tests if you want test browsers to appear in the dashboard as well.
 
+## Attaching to a Real Browser Without Overrides (`connectOverCDP({ noDefaults })`, Playwright 1.60+)
+
+When you attach to an *already-running* browser over CDP — your everyday Chrome started with `--remote-debugging-port`, for example — Playwright normally applies its own defaults to the default context (download behavior, focus emulation, media emulation). That can disturb a browser you're actively using.
+
+Playwright 1.60 adds the `noDefaults` option so you can attach without changing the browser's behavior.
+
+```typescript
+import { chromium } from 'playwright';
+
+async function main() {
+  // Attach to a daily-driver Chrome (launched with --remote-debugging-port=9222)
+  // without Playwright overriding download/focus/media behavior.
+  const browser = await chromium.connectOverCDP('http://localhost:9222', {
+    noDefaults: true,
+  });
+
+  const context = browser.contexts()[0];
+  const page = context.pages()[0] ?? (await context.newPage());
+
+  console.log(await page.title());
+
+  // Detach without closing the user's browser
+  await browser.close();
+}
+
+main();
+```
+
+**Use when**: Inspecting or driving a real, user-owned browser where Playwright's default overrides would be intrusive.
+**Avoid when**: You launched the browser for testing — the defaults (deterministic downloads, focus/media emulation) are usually what you want, so omit `noDefaults`.
+
 ## Persistent Profiles
 
 By default, sessions run **in-memory** — all cookies, storage, and browsing data are lost when the session closes. Use `--persistent` to save state to disk.

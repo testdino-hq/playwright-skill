@@ -98,6 +98,29 @@ export default defineConfig({
 
 This is especially effective when a test fails once, passes on retry, and you need to diff those attempts in Trace Viewer.
 
+### Capture `errorContext` for Intermittent Assertion Failures (Playwright 1.60+)
+
+When a flaky test fails only sometimes on an `expect()` matcher, the bare error message rarely explains *why*. Playwright 1.60 attaches `errorContext` to each `testInfo` error — including the aria snapshot of the element at the moment the matcher failed. Log it from `afterEach` so every flaky failure leaves a breadcrumb, even on the runs you can't reproduce locally.
+
+```typescript
+import { test } from '@playwright/test';
+
+test.afterEach(async ({}, testInfo) => {
+  if (testInfo.status !== testInfo.expectedStatus) {
+    for (const err of testInfo.errors) {
+      if (err.errorContext) {
+        await testInfo.attach('failure-context', {
+          body: err.errorContext,
+          contentType: 'text/plain',
+        });
+      }
+    }
+  }
+});
+```
+
+Pair this with `trace: 'retain-on-failure-and-retries'`: the trace shows the timeline, and `errorContext` captures the receiver's accessibility state at the exact failure point.
+
 ### Use UI Mode and Trace Viewer Filters
 
 When debugging a noisy trace or a long UI Mode run, use the newer filtering options to focus on the failing test, relevant actions, or a specific assertion sequence instead of scanning the full event stream manually.

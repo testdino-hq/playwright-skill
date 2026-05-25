@@ -597,6 +597,31 @@ test('app triggers a browser notification on new message', async ({ browser }) =
 });
 ```
 
+### Preserving a Real Browser's Behavior on Attach (`connectOverCDP({ noDefaults })`, Playwright 1.60+)
+
+**Use when**: You attach to an existing, user-owned browser over CDP and need it to keep behaving exactly as the user left it — Playwright otherwise overrides the default context's download, focus, and media emulation.
+**Avoid when**: You launched the browser for testing. The default overrides give you deterministic downloads and focus/media emulation, which is usually what tests want.
+
+Playwright 1.60 adds `noDefaults` to `browserType.connectOverCDP()` to disable those default-context overrides:
+
+```typescript
+import { chromium } from 'playwright';
+
+test('drive a real browser without changing its focus/media behavior', async () => {
+  const browser = await chromium.connectOverCDP('http://localhost:9222', {
+    noDefaults: true, // don't override download/focus/media emulation
+  });
+
+  const context = browser.contexts()[0];
+  const page = context.pages()[0] ?? (await context.newPage());
+  await page.goto('https://example.com');
+
+  await browser.close(); // detaches without closing the user's browser
+});
+```
+
+See [playwright-cli/session-management.md](../playwright-cli/session-management.md#attaching-to-a-real-browser-without-overrides-connectovercdp-nodefaults-playwright-160) for the CLI/agent attach workflow.
+
 ## Decision Guide
 
 | Browser API | How to Test | Key Configuration |

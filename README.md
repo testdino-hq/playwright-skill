@@ -37,7 +37,7 @@
 
 Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CLI automation. **70+ guides** with TypeScript and JavaScript examples.
 
-Updated for Playwright 1.59 coverage: screencast recording, bound browser sessions, CLI debugger and trace analysis workflows, aria snapshot helpers, and in-place storage state refresh.
+Updated for Playwright 1.60 coverage: on-demand HAR recording inside tracing, `locator.drop()` for external file drops, page-level aria snapshot assertions, `test.abort()` from fixtures and route handlers, `getByRole({ description })`, `toHaveCSS({ pseudo })`, and `connectOverCDP({ noDefaults })` — on top of the 1.59 features (screencast recording, bound browser sessions, CLI debugger and trace analysis, in-place storage state refresh).
 
 ## Install
 

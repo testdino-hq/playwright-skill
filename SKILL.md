@@ -4,7 +4,7 @@ description: Battle-tested Playwright patterns for writing, debugging, and scali
 license: MIT
 metadata:
   author: testdino.com
-  version: "2.2.0"
+  version: "2.3.0"
 ---
 
 # Playwright Skill
@@ -13,7 +13,7 @@ metadata:
 
 **50+ reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more — with TypeScript and JavaScript examples throughout.
 
-Playwright 1.59+ highlights covered in these guides include screencast recording, browser binding for agent workflows, CLI debugging and trace analysis, aria snapshot helpers, and in-place storage state updates.
+Playwright 1.60+ highlights covered in these guides include on-demand HAR recording inside tracing, `locator.drop()` for external file drops, page-level aria snapshot assertions, `test.abort()` from fixtures and route handlers, plus the 1.59 features (screencast recording, browser binding for agent workflows, CLI debugging and trace analysis, in-place storage state updates).
 
 ## Security Trust Boundary
 
