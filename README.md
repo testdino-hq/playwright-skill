@@ -39,7 +39,7 @@
 
 Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CLI automation. **70+ guides** with TypeScript and JavaScript examples.
 
-Updated Playwright 1.60 coverage: on-demand HAR recording, `locator.drop()`, page-level aria snapshots, `test.abort()`, `getByRole({ description })`, `toHaveCSS({ pseudo })`, and `connectOverCDP({ noDefaults })` — plus all 1.59 features.
+Updated Playwright 1.60 coverage: on-demand HAR recording, `locator.drop()`, page-level aria snapshots, `test.abort()`, `getByRole({ description })`, `toHaveCSS({ pseudo })`, and `connectOverCDP({ noDefaults })` — plus all 1.59 features. 
 
 ## Install
 
