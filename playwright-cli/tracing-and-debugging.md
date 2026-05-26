@@ -252,6 +252,30 @@ playwright-cli run-code "async page => {
 }"
 ```
 
+### Capture Scoped HAR via Tracing (Playwright 1.60+)
+
+When you want a HAR file for just one portion of a flow — not the whole session — use the 1.60 `tracing.startHar()` / `tracing.stopHar()` API from `run-code`. It records network traffic to a HAR file on demand and accepts the same `content`, `mode`, and `urlFilter` options as context-level `recordHar`.
+
+```bash
+# Start scoped HAR recording for the API calls in the next step
+playwright-cli run-code "async page => {
+  await page.context().tracing.startHar({
+    path: 'traces/checkout.har',
+    urlFilter: '**/api/**',
+    content: 'embed',
+  });
+}"
+
+playwright-cli click e5            # the flow you want captured
+
+# Stop and flush the HAR
+playwright-cli run-code "async page => {
+  await page.context().tracing.stopHar();
+}"
+```
+
+Inside the Playwright test runner the same API supports `await using` for automatic cleanup — see [core/network-mocking.md](../core/network-mocking.md#on-demand-har-recording-in-tracing-playwright-160).
+
 ## Debugging Strategies
 
 ### Strategy 1: Snapshot Before and After

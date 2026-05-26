@@ -27,6 +27,10 @@ const pageTree = await page.ariaSnapshot();
 
 // Or scope it to one region
 const dialogTree = await page.getByRole('dialog', { name: 'Checkout' }).ariaSnapshot();
+
+// Playwright 1.60+: assert the whole page's aria tree, and capture bounding boxes
+await expect(page).toMatchAriaSnapshot();
+const treeWithBoxes = await page.ariaSnapshot({ boxes: true });
 ```
 
 ## Patterns
@@ -87,6 +91,46 @@ test('checkout dialog exposes the expected accessibility structure', async ({ pa
   expect(dialogTree).toContain('button "Apply coupon"');
 });
 ```
+
+### Page-Level Aria Snapshot Assertions (Playwright 1.60+)
+
+**Use when**: You want to assert the whole page's accessibility tree against a stored snapshot, or you need element bounding boxes alongside the tree (useful for AI/agent consumption and layout-aware checks).
+**Avoid when**: A scoped locator assertion is enough — whole-page snapshots are broad and change often. Prefer asserting a stable region.
+
+Playwright 1.60 lets `expect(page).toMatchAriaSnapshot()` run at the **page level** (equivalent to asserting against `page.locator('body')`), and adds a `boxes` option to `ariaSnapshot()` that appends each element's bounding box.
+
+**TypeScript**
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('home page matches its aria snapshot', async ({ page }) => {
+  await page.goto('/');
+
+  // Page-level assertion — no need to target body explicitly.
+  // First run writes the snapshot; later runs compare against it.
+  await expect(page).toMatchAriaSnapshot();
+});
+
+test('capture aria tree with bounding boxes', async ({ page }) => {
+  await page.goto('/dashboard');
+
+  // `boxes: true` appends each node's [x, y, width, height] to the snapshot
+  const treeWithBoxes = await page.ariaSnapshot({ boxes: true });
+  expect(treeWithBoxes).toContain('heading "Dashboard"');
+});
+```
+
+**JavaScript**
+```javascript
+const { test, expect } = require('@playwright/test');
+
+test('home page matches its aria snapshot', async ({ page }) => {
+  await page.goto('/');
+  await expect(page).toMatchAriaSnapshot();
+});
+```
+
+> Page-level `toMatchAriaSnapshot()` is broad — scope to a region (`expect(page.getByRole('main')).toMatchAriaSnapshot()`) when you want assertions that survive unrelated layout changes.
 
 ### axe-core/playwright Integration
 

@@ -33,11 +33,13 @@
   </picture> by
   <a href="https://testdino.com">testdino.com</a>
   — Purpose built for debugging, managing, and improving Playwright tests with AI
-</p># Playwright Skill Guides
+</p>
+
+# Playwright Skill Guides
 
 Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CLI automation. **70+ guides** with TypeScript and JavaScript examples.
 
-Updated for Playwright 1.59 coverage: screencast recording, bound browser sessions, CLI debugger and trace analysis workflows, aria snapshot helpers, and in-place storage state refresh.
+Updated Playwright 1.60 coverage: on-demand HAR recording, `locator.drop()`, page-level aria snapshots, `test.abort()`, `getByRole({ description })`, `toHaveCSS({ pseudo })`, and `connectOverCDP({ noDefaults })` — plus all 1.59 features. 
 
 ## Install
 

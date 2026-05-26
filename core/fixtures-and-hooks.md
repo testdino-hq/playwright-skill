@@ -782,6 +782,64 @@ export const test = base.extend<TestFixtures, WorkerFixtures>({
 export { expect };
 ```
 
+### 11. Aborting a Test From a Fixture or Route (`test.abort()`, Playwright 1.60+)
+
+**Use when**: A fixture, hook, or route handler detects an unrecoverable precondition — a required backend is down, a seed step failed, or a route received an unexpected request — and continuing would only produce a confusing downstream failure.
+**Avoid when**: The test body itself can assert the condition. Use a normal `expect()` there. `test.abort()` is for code that runs *outside* the test body where you can't `expect`.
+
+Playwright 1.60 adds `test.abort(message?)`, which immediately stops the currently running test. Unlike `test.skip()`, it marks the test as failed/aborted with your message, and unlike throwing it works cleanly from fixtures and route handlers.
+
+**TypeScript**
+```typescript
+import { test as base, expect } from '@playwright/test';
+
+export const test = base.extend({
+  // Abort early if the environment isn't ready, instead of letting every
+  // assertion fail with a cryptic message.
+  seededDb: async ({}, use) => {
+    const res = await fetch(`${process.env.API_URL}/health/db`);
+    if (!res.ok) {
+      base.abort(`Database not reachable (${res.status}) — aborting test`);
+    }
+    await use(true);
+  },
+});
+
+test('checkout works on a healthy backend', async ({ page, seededDb }) => {
+  await page.goto('/checkout');
+  await expect(page.getByRole('heading', { name: 'Checkout' })).toBeVisible();
+});
+
+test('abort from a route handler on an unexpected request', async ({ page }) => {
+  await page.route('**/api/**', (route) => {
+    if (route.request().url().includes('/api/forbidden')) {
+      test.abort('Unexpected call to forbidden endpoint');
+    }
+    return route.continue();
+  });
+
+  await page.goto('/dashboard');
+});
+```
+
+**JavaScript**
+```javascript
+const { test, expect } = require('@playwright/test');
+
+test('abort from a route handler on an unexpected request', async ({ page }) => {
+  await page.route('**/api/**', (route) => {
+    if (route.request().url().includes('/api/forbidden')) {
+      test.abort('Unexpected call to forbidden endpoint');
+    }
+    return route.continue();
+  });
+
+  await page.goto('/dashboard');
+});
+```
+
+> `test.abort()` ends the test now — code after it in the same handler won't run. Use it for *unrecoverable* conditions; for "this test doesn't apply here", prefer `test.skip()`.
+
 ## Decision Guide
 
 ```

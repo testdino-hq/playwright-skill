@@ -118,6 +118,30 @@ export default defineConfig({
 
 This is excellent for flaky-test analysis because you can compare the failing run against a passing retry instead of guessing what changed between attempts.
 
+### Pattern 2c: Scoped HAR Artifacts For a Flow (Playwright 1.60+)
+
+**Use when**: You want a network archive (HAR) attached to the report for one specific flow — e.g. a flaky third-party integration — without recording HAR for the entire context.
+**Avoid when**: A trace already gives you the network waterfall you need (traces include network detail). Reach for a dedicated HAR only when you need a portable `.har` to replay or hand to another tool.
+
+Playwright 1.60 adds `tracing.startHar()` / `tracing.stopHar()`, which record HAR on demand inside the test. Capture only the suspect flow and attach it to the report:
+
+```ts
+import { test } from '@playwright/test';
+
+test('payment integration', async ({ context, page }, testInfo) => {
+  const harPath = testInfo.outputPath('payment.har');
+  await context.tracing.startHar({ path: harPath, urlFilter: '**/payments/**' });
+
+  await page.goto('/checkout');
+  await page.getByRole('button', { name: 'Pay' }).click();
+
+  await context.tracing.stopHar();
+  await testInfo.attach('payment-network', { path: harPath, contentType: 'application/json' });
+});
+```
+
+The attached HAR shows up alongside traces and screenshots in the HTML report and CI artifacts. See [core/network-mocking.md](../core/network-mocking.md#on-demand-har-recording-in-tracing-playwright-160) for the full API and `await using` cleanup.
+
 ### Pattern 3: Custom Reporter
 
 **Use when**: Built-in reporters don't meet your needs -- you want Slack notifications, database logging, or custom dashboards.

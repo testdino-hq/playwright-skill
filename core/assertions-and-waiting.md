@@ -98,6 +98,40 @@ test('web-first assertions demo', async ({ page }) => {
 });
 ```
 
+#### Asserting Pseudo-Element Styles (`toHaveCSS({ pseudo })`, Playwright 1.60+)
+
+**Use when**: The style you care about lives on a `::before` or `::after` pseudo-element — icon glyphs (`content`), decorative bars, required-field asterisks, tooltips.
+**Avoid when**: The style is on the element itself; pass no `pseudo` option.
+
+Playwright 1.60 adds a `pseudo` option to `toHaveCSS()`, so you can assert computed styles of pseudo-elements directly instead of reaching into `getComputedStyle` via `evaluate`.
+
+**TypeScript**
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('required field shows a red asterisk via ::after', async ({ page }) => {
+  await page.goto('/register');
+
+  const label = page.getByText('Email', { exact: true });
+
+  // Verify the ::after content and color of the "required" marker
+  await expect(label).toHaveCSS('content', '"*"', { pseudo: '::after' });
+  await expect(label).toHaveCSS('color', 'rgb(220, 38, 38)', { pseudo: '::after' });
+});
+```
+
+**JavaScript**
+```javascript
+const { test, expect } = require('@playwright/test');
+
+test('required field shows a red asterisk via ::after', async ({ page }) => {
+  await page.goto('/register');
+
+  const label = page.getByText('Email', { exact: true });
+  await expect(label).toHaveCSS('content', '"*"', { pseudo: '::after' });
+});
+```
+
 ### Non-Retrying Assertions
 
 **Use when**: The value is already resolved — a JavaScript variable, an API response body, a page title from `page.title()`, or a URL from `page.url()`.
@@ -597,7 +631,7 @@ export default defineConfig({
 | Element count | `expect(locator).toHaveCount(n)` | Retries until count matches |
 | Input value | `expect(locator).toHaveValue('x')` | Auto-retries on the locator |
 | Element attribute | `expect(locator).toHaveAttribute('href', '/x')` | Auto-retries |
-| CSS property | `expect(locator).toHaveCSS('color', 'rgb(0,0,0)')` | Auto-retries; use computed RGB values |
+| CSS property | `expect(locator).toHaveCSS('color', 'rgb(0,0,0)')` | Auto-retries; use computed RGB values. Add `{ pseudo: '::after' }` (1.60+) for pseudo-element styles |
 | Element gone from DOM | `expect(locator).not.toBeAttached()` | Distinguishes hidden vs. removed |
 | URL changed | `page.waitForURL('/path')` or `expect(page).toHaveURL('/path')` | `toHaveURL` auto-retries; `waitForURL` blocks |
 | Page title | `expect(page).toHaveTitle('Title')` | Auto-retries |
