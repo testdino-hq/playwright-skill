@@ -63,6 +63,15 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 | Drag and drop | [drag-and-drop.md](core/drag-and-drop.md) | |
 | Search & filter UI | [search-and-filter.md](core/search-and-filter.md) | |
 
+### Authoring Locatable Markup (Frontend)
+
+> For **frontend engineers writing the app** — make components reliably locatable by tests and AI agents.
+
+| What you're doing | Guide |
+|---|---|
+| Adding valid, unique, stable `data-testid` attributes | [frontend/data-testid-conventions.md](frontend/data-testid-conventions.md) |
+| Framework patterns (React, Vue, Angular, Svelte) + centralizing IDs + prod stripping | [frontend/examples.md](frontend/examples.md) |
+
 ### Debugging & Fixing
 
 | Problem | Guide |

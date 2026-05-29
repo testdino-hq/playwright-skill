@@ -53,6 +53,7 @@ Or add individual skill packs:
 
 ```bash
 npx skills add testdino-hq/playwright-skill/core
+npx skills add testdino-hq/playwright-skill/frontend
 npx skills add testdino-hq/playwright-skill/ci
 npx skills add testdino-hq/playwright-skill/pom
 npx skills add testdino-hq/playwright-skill/migration
@@ -67,6 +68,7 @@ npx skills add testdino-hq/playwright-skill/playwright-cli
 | Skill Pack | Guides | What's Covered |
 |---|:---:|---|
 | **core** | 46 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, framework recipes |
+| **frontend** | 2 | For frontend engineers: adding valid, unique, stable `data-testid` attributes (naming, list uniqueness, stability) + React/Vue/Angular/Svelte patterns |
 | **ci** | 9 | GitHub Actions, GitLab CI, CircleCI, Azure DevOps, Jenkins, Docker, sharding, reporting, coverage |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
 | **migration** | 2 | Migrating from Cypress, migrating from Selenium |
@@ -134,6 +136,15 @@ The foundation of Playwright testing. These guides cover everything you need to 
 | [service-workers-and-pwa.md](core/service-workers-and-pwa.md) | PWA testing, offline mode |
 | [browser-extensions.md](core/browser-extensions.md) | Extension testing patterns |
 | [i18n-and-localization.md](core/i18n-and-localization.md) | Multi-language, RTL, locale testing |
+
+## Frontend Skills
+
+For **frontend engineers writing the app** — make components reliably locatable by tests and AI agents (the authoring counterpart to the test-author guides above).
+
+| Guide | Description |
+|---|---|
+| [data-testid-conventions.md](frontend/data-testid-conventions.md) | When to add `data-testid`, naming convention, uniqueness in lists, stability rules, `testIdAttribute` config |
+| [examples.md](frontend/examples.md) | React/JSX, Vue, Angular, Svelte patterns; centralizing IDs; optional production stripping |
 
 ## CI/CD Skills
 
