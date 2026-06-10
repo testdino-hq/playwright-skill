@@ -37,19 +37,25 @@
 
 # Playwright Skill Guides
 
-Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CLI automation. **70+ guides** with TypeScript and JavaScript examples.
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Playwright](https://img.shields.io/badge/Playwright-1.60%2B-2EAD33.svg)](https://playwright.dev)
+[![Guides](https://img.shields.io/badge/guides-69-blue.svg)](SKILL.md)
 
-Updated Playwright 1.60 coverage: on-demand HAR recording, `locator.drop()`, page-level aria snapshots, `test.abort()`, `getByRole({ description })`, `toHaveCSS({ pseudo })`, and `connectOverCDP({ noDefaults })` — plus all 1.59 features. 
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, page objects, and migration. **69 guides** with TypeScript and JavaScript examples throughout.
+
+These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
+
+Playwright 1.60+ coverage: on-demand HAR recording inside tracing, `locator.drop()`, page-level aria snapshot assertions, `test.abort()` from fixtures and route handlers, `getByRole({ description })`, `toHaveCSS({ pseudo })`, and `connectOverCDP({ noDefaults })` — plus all 1.59 features.
 
 ## Install
 
-Add all skills to your project:
+Add every skill pack to your project:
 
 ```bash
 npx skills add testdino-hq/playwright-skill
 ```
 
-Or add individual skill packs:
+Or add individual packs:
 
 ```bash
 npx skills add testdino-hq/playwright-skill/core
@@ -59,42 +65,56 @@ npx skills add testdino-hq/playwright-skill/migration
 npx skills add testdino-hq/playwright-skill/playwright-cli
 ```
 
-> 🎬 Watch the installation guide 
+> 🎬 Watch the installation guide
 [![Watch the installation guide](https://img.youtube.com/vi/8dRCJZ_we0s/maxresdefault.jpg)](https://www.youtube.com/watch?v=8dRCJZ_we0s)
 
-## Skills Overview
+## Skill Packs
 
-| Skill Pack | Guides | What's Covered |
+| Pack | Guides | What's covered |
 |---|:---:|---|
-| **core** | 46 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, framework recipes |
+| **core** | 46 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, framework recipes, architecture decisions |
 | **ci** | 9 | GitHub Actions, GitLab CI, CircleCI, Azure DevOps, Jenkins, Docker, sharding, reporting, coverage |
+| **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
 | **migration** | 2 | Migrating from Cypress, migrating from Selenium |
-| **playwright-cli** | 11 | CLI browser automation, screenshots, tracing, session management, device emulation |
+
+## Golden Rules
+
+The patterns every guide assumes (full list with rationale in [SKILL.md](SKILL.md)):
+
+1. **`getByRole()` over CSS/XPath** — resilient to markup changes
+2. **Never `page.waitForTimeout()`** — use web-first assertions or `page.waitForURL()`
+3. **Isolate every test** — no shared state, no order dependencies
+4. **`baseURL` in config** — zero hardcoded URLs in tests
+5. **Mock external services only** — never mock your own app
 
 ## Core Skills
 
-The foundation of Playwright testing. These guides cover everything you need to write, debug, and maintain reliable end-to-end tests.
-
-- **Start here** if you're new to Playwright — begin with locators, assertions, and fixtures
-- Covers common patterns like authentication, API testing, network mocking, and visual regression
-- Includes framework-specific recipes for React, Vue, Angular, and Next.js
-- Debugging guides to help you fix flaky tests and common pitfalls
+The foundation: writing, debugging, and maintaining reliable tests. New to Playwright? Start with [locators.md](core/locators.md), [assertions-and-waiting.md](core/assertions-and-waiting.md), and [fixtures-and-hooks.md](core/fixtures-and-hooks.md).
 
 ### Writing Tests
 
 | Guide | Description |
 |---|---|
 | [locators.md](core/locators.md) | Selector strategies — `getByRole`, `getByText`, `getByTestId` |
+| [locator-strategy.md](core/locator-strategy.md) | Choosing a locator strategy and trade-offs |
 | [assertions-and-waiting.md](core/assertions-and-waiting.md) | Web-first assertions, auto-retry, waiting patterns |
 | [fixtures-and-hooks.md](core/fixtures-and-hooks.md) | `test.extend()`, setup/teardown, worker-scoped fixtures |
 | [configuration.md](core/configuration.md) | `playwright.config.ts` — projects, timeouts, reporters, web server |
 | [test-organization.md](core/test-organization.md) | File structure, tagging, `test.describe`, test filtering |
 | [test-data-management.md](core/test-data-management.md) | Factories, seeding, cleanup strategies |
 | [authentication.md](core/authentication.md) | Storage state reuse, multi-role auth, session management |
+| [auth-flows.md](core/auth-flows.md) | Login, OAuth, and multi-step auth flows |
 | [api-testing.md](core/api-testing.md) | REST and GraphQL testing with `request` fixture |
 | [network-mocking.md](core/network-mocking.md) | Route interception, HAR replay, response modification |
+| [when-to-mock.md](core/when-to-mock.md) | When to mock vs hit real services |
 | [forms-and-validation.md](core/forms-and-validation.md) | Form fills, validation, error states, multi-step wizards |
+| [crud-testing.md](core/crud-testing.md) | Create / read / update / delete flow testing |
+| [search-and-filter.md](core/search-and-filter.md) | Search and filter UI testing |
+| [drag-and-drop.md](core/drag-and-drop.md) | Drag-and-drop interactions |
+| [file-operations.md](core/file-operations.md) | File handling in tests |
+| [file-upload-download.md](core/file-upload-download.md) | Upload and download flows |
+| [error-and-edge-cases.md](core/error-and-edge-cases.md) | Error states and edge-case coverage |
 | [visual-regression.md](core/visual-regression.md) | Screenshot comparison, thresholds, masking dynamic content |
 | [accessibility.md](core/accessibility.md) | axe-core integration, ARIA assertions, a11y auditing |
 | [component-testing.md](core/component-testing.md) | Mount React/Vue/Svelte components in isolation |
@@ -108,6 +128,15 @@ The foundation of Playwright testing. These guides cover everything you need to 
 | [error-index.md](core/error-index.md) | Common error messages and how to fix them |
 | [flaky-tests.md](core/flaky-tests.md) | Root causes, retry strategies, stabilization patterns |
 | [common-pitfalls.md](core/common-pitfalls.md) | Top beginner mistakes and how to avoid them |
+
+### Architecture Decisions
+
+| Question | Guide |
+|---|---|
+| E2E vs component vs API? | [test-architecture.md](core/test-architecture.md) |
+| Which locator strategy? | [locator-strategy.md](core/locator-strategy.md) |
+| Mock vs real services? | [when-to-mock.md](core/when-to-mock.md) |
+| POM vs fixtures vs helpers? | [pom-vs-fixtures-vs-helpers.md](pom/pom-vs-fixtures-vs-helpers.md) |
 
 ### Framework Recipes
 
@@ -125,6 +154,7 @@ The foundation of Playwright testing. These guides cover everything you need to 
 | [browser-apis.md](core/browser-apis.md) | Geolocation, clipboard, permissions |
 | [iframes-and-shadow-dom.md](core/iframes-and-shadow-dom.md) | Cross-frame testing, Shadow DOM piercing |
 | [multi-context-and-popups.md](core/multi-context-and-popups.md) | Multi-tab, popups, new windows |
+| [multi-user-and-collaboration.md](core/multi-user-and-collaboration.md) | Multi-user and real-time collaboration flows |
 | [websockets-and-realtime.md](core/websockets-and-realtime.md) | WebSocket testing, real-time UI |
 | [canvas-and-webgl.md](core/canvas-and-webgl.md) | Canvas testing, visual comparison |
 | [electron-testing.md](core/electron-testing.md) | Desktop app testing with Electron |
@@ -133,6 +163,7 @@ The foundation of Playwright testing. These guides cover everything you need to 
 | [clock-and-time-mocking.md](core/clock-and-time-mocking.md) | Fake timers, date mocking |
 | [service-workers-and-pwa.md](core/service-workers-and-pwa.md) | PWA testing, offline mode |
 | [browser-extensions.md](core/browser-extensions.md) | Extension testing patterns |
+| [third-party-integrations.md](core/third-party-integrations.md) | Testing against third-party services |
 | [i18n-and-localization.md](core/i18n-and-localization.md) | Multi-language, RTL, locale testing |
 
 ## CI/CD Skills
