@@ -309,7 +309,12 @@ export default defineConfig({
 | `'off'` | Never | -- | None |
 | `'on'` | Every test | All | Very high |
 | `'on-first-retry'` | On retry | Retried tests | Low |
+| `'on-all-retries'` (1.61+) | On every retry | All retries | Low-medium |
 | `'retain-on-failure'` | Every test | Failed only | Medium |
+| `'retain-on-first-failure'` (1.61+) | First run of every test (not retries) | Failed first runs | Medium |
+| `'retain-on-failure-and-retries'` (1.61+) | Every run incl. retries | Failures + their retries | Medium |
+
+The 1.61 modes mirror the `trace` modes, so video and trace policies can finally match. `'retain-on-failure-and-retries'` is the best default for flaky-test hunting: you get video of both the original failure *and* the retry, so you can compare the two runs.
 
 ### Pattern 6: Artifact Organization for CI
 

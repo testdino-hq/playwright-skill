@@ -4,7 +4,7 @@ description: Battle-tested Playwright patterns for writing, debugging, and scali
 license: MIT
 metadata:
   author: testdino.com
-  version: "2.3.0"
+  version: "2.4.0"
 ---
 
 # Playwright Skill
@@ -13,7 +13,7 @@ metadata:
 
 **50+ reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more — with TypeScript and JavaScript examples throughout.
 
-Playwright 1.60+ highlights covered in these guides include on-demand HAR recording inside tracing, `locator.drop()` for external file drops, page-level aria snapshot assertions, `test.abort()` from fixtures and route handlers, plus the 1.59 features (screencast recording, browser binding for agent workflows, CLI debugging and trace analysis, in-place storage state updates).
+Playwright 1.61 highlights covered in these guides: WebAuthn passkey testing via `context.credentials`, the `page.localStorage` / `page.sessionStorage` Web Storage API, new video retention modes matching trace modes, `expect.soft.poll()`, WebSockets in HAR and trace recordings, and `apiResponse.securityDetails()` / `serverAddr()`. Also covered: the 1.60 features (on-demand HAR recording inside tracing, `locator.drop()`, page-level aria snapshot assertions, `test.abort()`) and 1.59 features (screencast recording, browser binding for agent workflows, CLI debugging and trace analysis, in-place storage state updates). A dedicated [trace-analysis.md](core/trace-analysis.md) guide covers agent-native debugging of `trace.zip` reports with the `npx playwright trace` CLI.
 
 ## Security Trust Boundary
 
@@ -71,6 +71,7 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 | Specific error message | [error-index.md](core/error-index.md) |
 | Flaky / intermittent tests | [flaky-tests.md](core/flaky-tests.md) |
 | Common beginner mistakes | [common-pitfalls.md](core/common-pitfalls.md) |
+| Debug a `trace.zip` from the terminal / with an agent | [trace-analysis.md](core/trace-analysis.md) |
 
 ### Framework Recipes
 

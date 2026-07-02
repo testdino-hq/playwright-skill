@@ -407,9 +407,9 @@ import { test, expect } from '@playwright/test';
 
 test('capture uncaught errors with their source location', async ({ context, page }) => {
   context.on('weberror', (webError) => {
-    const loc = webError.location(); // { url, lineNumber, columnNumber }
+    const loc = webError.location(); // { url, line, column } — 0-based
     console.error(
-      `Uncaught: ${webError.error().message} @ ${loc.url}:${loc.lineNumber}:${loc.columnNumber}`
+      `Uncaught: ${webError.error().message} @ ${loc.url}:${loc.line}:${loc.column}`
     );
   });
 

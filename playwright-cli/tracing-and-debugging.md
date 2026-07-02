@@ -131,6 +131,8 @@ npx playwright trace close
 
 Use the GUI Trace Viewer when you want the richest visual timeline. Use the CLI trace tools when you need quick answers in a terminal-first workflow.
 
+> For the full `npx playwright trace` command surface (`requests`, `console`, `errors`, `attachments`, `screenshot`), agent decision trees, and failure-type playbooks for debugging a `trace.zip` post-mortem, see [core/trace-analysis.md](../core/trace-analysis.md).
+
 ## Agent Debugging With `--debug=cli` (Playwright 1.59+)
 
 Playwright 1.59 adds a debugger flow designed for coding agents and terminal-based debugging. Start the test runner with `--debug=cli`, attach with `playwright-cli`, and then step through the paused test from the command line.

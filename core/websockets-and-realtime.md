@@ -30,6 +30,8 @@ await page.routeWebSocket('**/ws', (ws) => {
 **Use when**: You need to verify that your app sends and receives the correct WebSocket messages without modifying them.
 **Avoid when**: You need to intercept or mock the messages. Use `routeWebSocket` instead.
 
+> **Playwright 1.61+**: HAR and trace recordings now include WebSocket requests. For post-mortem debugging you often don't need listener code at all — record a trace and inspect the WS traffic in the Trace Viewer or with `npx playwright trace requests` (see [trace-analysis.md](trace-analysis.md)).
+
 **TypeScript**
 ```typescript
 import { test, expect } from '@playwright/test';

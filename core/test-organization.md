@@ -428,6 +428,7 @@ test('should fail when submitting empty card form', async ({ page }) => {
 npx playwright test --grep @smoke
 npx playwright test --grep @regression
 npx playwright test --grep-invert @slow     # everything except @slow
+npx playwright test -G @slow                # same — -G is the 1.61+ shorthand
 
 # By file
 npx playwright test tests/auth/

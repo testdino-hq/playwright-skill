@@ -281,6 +281,14 @@ if (test.info().errors.length > 0) return; // bail out — no point continuing
 await page.getByRole('button', { name: 'Next' }).click();
 ```
 
+**Soft polling (Playwright 1.61+)**: `expect.soft.poll()` combines both — poll an async condition, record a failure without stopping the test:
+
+```typescript
+// Audit several async conditions; see every failure in one run
+await expect.soft.poll(() => getQueueDepth()).toBe(0);
+await expect.soft.poll(() => getFailedJobCount()).toBe(0);
+```
+
 ### Polling Assertions
 
 **Use when**: Waiting for a non-DOM, non-locator async condition: API readiness, database state, file existence, polling a service.

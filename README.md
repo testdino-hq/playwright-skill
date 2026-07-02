@@ -38,14 +38,14 @@
 # Playwright Skill Guides
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Playwright](https://img.shields.io/badge/Playwright-1.60%2B-2EAD33.svg)](https://playwright.dev)
-[![Guides](https://img.shields.io/badge/guides-69-blue.svg)](SKILL.md)
+[![Playwright](https://img.shields.io/badge/Playwright-1.61%2B-2EAD33.svg)](https://playwright.dev)
+[![Guides](https://img.shields.io/badge/guides-70-blue.svg)](SKILL.md)
 
-Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, page objects, and migration. **69 guides** with TypeScript and JavaScript examples throughout.
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **70 guides** with TypeScript and JavaScript examples throughout.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
-Playwright 1.60+ coverage: on-demand HAR recording inside tracing, `locator.drop()`, page-level aria snapshot assertions, `test.abort()` from fixtures and route handlers, `getByRole({ description })`, `toHaveCSS({ pseudo })`, and `connectOverCDP({ noDefaults })` — plus all 1.59 features.
+Playwright 1.61 coverage: WebAuthn passkey testing (`context.credentials`), the `page.localStorage` / `page.sessionStorage` Web Storage API, new video retention modes, `expect.soft.poll()`, WebSockets in HAR and traces, and `apiResponse.securityDetails()` / `serverAddr()` — plus all 1.60 features (on-demand HAR in tracing, `locator.drop()`, page-level aria snapshots, `test.abort()`, `getByRole({ description })`, `toHaveCSS({ pseudo })`) and 1.59 features.
 
 ## Install
 
@@ -72,7 +72,7 @@ npx skills add testdino-hq/playwright-skill/playwright-cli
 
 | Pack | Guides | What's covered |
 |---|:---:|---|
-| **core** | 46 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, framework recipes, architecture decisions |
+| **core** | 47 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, trace-report analysis, framework recipes, architecture decisions |
 | **ci** | 9 | GitHub Actions, GitLab CI, CircleCI, Azure DevOps, Jenkins, Docker, sharding, reporting, coverage |
 | **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
@@ -125,6 +125,7 @@ The foundation: writing, debugging, and maintaining reliable tests. New to Playw
 | Guide | Description |
 |---|---|
 | [debugging.md](core/debugging.md) | Trace viewer, `PWDEBUG`, UI mode, headed + slow-mo |
+| [trace-analysis.md](core/trace-analysis.md) | Debug a `trace.zip` from the terminal with the `npx playwright trace` CLI — agent-native, decision trees, failure playbooks |
 | [error-index.md](core/error-index.md) | Common error messages and how to fix them |
 | [flaky-tests.md](core/flaky-tests.md) | Root causes, retry strategies, stabilization patterns |
 | [common-pitfalls.md](core/common-pitfalls.md) | Top beginner mistakes and how to avoid them |
