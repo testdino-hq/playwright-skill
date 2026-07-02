@@ -454,6 +454,12 @@ test('thorough response validation', async ({ request }) => {
   expect(response.headers()['x-request-id']).toBeDefined();
   expect(response.headers()['cache-control']).toMatch(/max-age=\d+/);
 
+  // TLS and connection details (Playwright 1.61+ — mirrors the browser-side APIs)
+  const security = await response.securityDetails();  // protocol, issuer, validity
+  expect(security?.protocol).toBe('TLS 1.3');
+  const addr = await response.serverAddr();           // { ipAddress, port } actually hit
+  expect(addr?.port).toBe(443);
+
   // Full body parse and deep assertion
   const user = await response.json();
 

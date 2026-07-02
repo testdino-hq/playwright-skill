@@ -352,14 +352,16 @@ test('video call shows local preview with fake camera', async () => {
 **Use when**: Your app persists state, tokens, preferences, or feature flags in web storage.
 **Avoid when**: You can set the state through the UI or API instead. Prefer those approaches for realism.
 
+Playwright 1.61 adds a first-class Web Storage API — `page.localStorage` and `page.sessionStorage` — with `getItem`, `setItem`, `removeItem`, `clear`, and `items()`. Prefer it over `page.evaluate()`: no serialization boilerplate, and it works even when the page has a strict CSP that blocks script evaluation.
+
 **TypeScript**
 ```typescript
 import { test, expect } from '@playwright/test';
 
 test('app loads dark theme from localStorage preference', async ({ page }) => {
-  // Set localStorage before navigating
+  // Set localStorage before the app reads it (Playwright 1.61+)
   await page.goto('/');
-  await page.evaluate(() => localStorage.setItem('theme', 'dark'));
+  await page.localStorage.setItem('theme', 'dark');
 
   // Reload to pick up the stored preference
   await page.reload();
@@ -371,29 +373,29 @@ test('clear localStorage between scenarios', async ({ page }) => {
   await page.goto('/');
 
   // Seed some data
-  await page.evaluate(() => {
-    localStorage.setItem('cart', JSON.stringify([{ id: 1, qty: 2 }]));
-    localStorage.setItem('user_prefs', JSON.stringify({ currency: 'EUR' }));
-  });
+  await page.localStorage.setItem('cart', JSON.stringify([{ id: 1, qty: 2 }]));
+  await page.localStorage.setItem('user_prefs', JSON.stringify({ currency: 'EUR' }));
 
   // Read and verify
-  const cart = await page.evaluate(() => JSON.parse(localStorage.getItem('cart') || '[]'));
+  const cart = JSON.parse((await page.localStorage.getItem('cart')) ?? '[]');
   expect(cart).toHaveLength(1);
 
+  // List everything stored
+  const all = await page.localStorage.items();
+
   // Clear specific keys
-  await page.evaluate(() => localStorage.removeItem('cart'));
+  await page.localStorage.removeItem('cart');
 
   // Or clear everything
-  await page.evaluate(() => localStorage.clear());
+  await page.localStorage.clear();
 });
 
 test('sessionStorage survives navigations within the session', async ({ page }) => {
   await page.goto('/step-1');
-  await page.evaluate(() => sessionStorage.setItem('wizard_step', '1'));
+  await page.sessionStorage.setItem('wizard_step', '1');
 
   await page.goto('/step-2');
-  const step = await page.evaluate(() => sessionStorage.getItem('wizard_step'));
-  expect(step).toBe('1');
+  expect(await page.sessionStorage.getItem('wizard_step')).toBe('1');
 });
 ```
 
@@ -403,7 +405,7 @@ const { test, expect } = require('@playwright/test');
 
 test('app loads dark theme from localStorage preference', async ({ page }) => {
   await page.goto('/');
-  await page.evaluate(() => localStorage.setItem('theme', 'dark'));
+  await page.localStorage.setItem('theme', 'dark');
   await page.reload();
 
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
@@ -411,12 +413,18 @@ test('app loads dark theme from localStorage preference', async ({ page }) => {
 
 test('sessionStorage survives navigations within the session', async ({ page }) => {
   await page.goto('/step-1');
-  await page.evaluate(() => sessionStorage.setItem('wizard_step', '1'));
+  await page.sessionStorage.setItem('wizard_step', '1');
 
   await page.goto('/step-2');
-  const step = await page.evaluate(() => sessionStorage.getItem('wizard_step'));
-  expect(step).toBe('1');
+  expect(await page.sessionStorage.getItem('wizard_step')).toBe('1');
 });
+```
+
+**On Playwright < 1.61**, fall back to `page.evaluate()`:
+
+```typescript
+await page.evaluate(() => localStorage.setItem('theme', 'dark'));
+const step = await page.evaluate(() => sessionStorage.getItem('wizard_step'));
 ```
 
 ### IndexedDB Testing

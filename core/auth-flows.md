@@ -977,6 +977,57 @@ test('logs in with MFA (TOTP)', async ({ page }) => {
 });
 ```
 
+### Passkeys / WebAuthn (Playwright 1.61+)
+
+Playwright 1.61 ships a virtual WebAuthn authenticator scoped to the browser context: `context.credentials`. Tests can register passkeys and answer `navigator.credentials.create()` / `navigator.credentials.get()` ceremonies without a hardware security key. Call `credentials.install()` before any page in the context starts a WebAuthn ceremony.
+
+**Pattern A: let the app register a passkey, then sign in with it**
+
+```typescript
+test('registers a passkey and signs in with it', async ({ browser }) => {
+  const context = await browser.newContext();
+  await context.credentials.install(); // override navigator.credentials in this context
+
+  const page = await context.newPage();
+
+  // Register: the app's "Create a passkey" flow now talks to the virtual authenticator
+  await page.goto('/settings/security');
+  await page.getByRole('button', { name: 'Create a passkey' }).click();
+  await expect(page.getByText('Passkey added')).toBeVisible();
+
+  // Sign out, then sign back in with the passkey
+  await page.goto('/logout');
+  await page.goto('/login');
+  await page.getByRole('button', { name: 'Sign in with a passkey' }).click();
+  // navigator.credentials.get() is answered with the registered passkey
+  await expect(page).toHaveURL('/dashboard');
+
+  await context.close();
+});
+```
+
+**Pattern B: capture once, seed everywhere (the storageState pattern for passkeys)**
+
+```typescript
+// setup project: register a passkey once and save it (it includes the private key)
+const [credential] = await context.credentials.get({ rpId: 'example.com' });
+fs.writeFileSync('playwright/.auth/passkey.json', JSON.stringify(credential));
+
+// later tests: seed the captured passkey so the user is already enrolled
+const credential = JSON.parse(fs.readFileSync('playwright/.auth/passkey.json', 'utf8'));
+const context = await browser.newContext();
+await context.credentials.create(credential.rpId, credential);
+await context.credentials.install();
+// navigator.credentials.get() now resolves the seeded passkey — no registration UI needed
+```
+
+You can also seed a credential your backend already provisioned for a test user by passing `id`, `userHandle`, `privateKey` (base64url PKCS#8), and `publicKey` (base64url SPKI) to `credentials.create(rpId, …)`, and remove one with `credentials.delete(id)`.
+
+**Tips:**
+- Treat saved passkey JSON like a saved `storageState` — it contains a private key, so keep it out of version control (`.gitignore` the `.auth/` directory).
+- Combine with a setup project (see Recipe 1) so passkey enrollment happens once per run, not per test.
+- Test the fallback path too: what happens when the user cancels the ceremony or has no passkey.
+
 ### Testing Auth with Different Browser Contexts
 
 ```typescript
