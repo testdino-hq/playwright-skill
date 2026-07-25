@@ -1,6 +1,6 @@
 ---
 name: playwright-skill
-description: Battle-tested Playwright patterns for writing, debugging, and scaling reliable test suites. Use when you need guidance for E2E, API, component, visual, accessibility, or security testing, plus CI/CD, CLI automation, page objects, and migration from Cypress or Selenium. TypeScript and JavaScript.
+description: Battle-tested TypeScript Playwright patterns for writing, debugging, and scaling reliable test suites. Use when you need guidance for E2E, API, component, visual, accessibility, or security testing, plus CI/CD, CLI automation, page objects, and migration from Cypress or Selenium.
 license: MIT
 metadata:
   author: testdino.com
@@ -11,7 +11,7 @@ metadata:
 
 > Opinionated, production-tested Playwright guidance — every pattern includes when (and when *not*) to use it.
 
-**50+ reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more — with TypeScript and JavaScript examples throughout.
+**50+ reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more—with TypeScript examples throughout.
 
 Playwright 1.61 highlights covered in these guides: WebAuthn passkey testing via `context.credentials`, the `page.localStorage` / `page.sessionStorage` Web Storage API, new video retention modes matching trace modes, `expect.soft.poll()`, WebSockets in HAR and trace recordings, and `apiResponse.securityDetails()` / `serverAddr()`. Also covered: the 1.60 features (on-demand HAR recording inside tracing, `locator.drop()`, page-level aria snapshot assertions, `test.abort()`) and 1.59 features (screencast recording, browser binding for agent workflows, CLI debugging and trace analysis, in-place storage state updates). A dedicated [trace-analysis.md](core/trace-analysis.md) guide covers agent-native debugging of `trace.zip` reports with the `npx playwright trace` CLI.
 
@@ -146,7 +146,3 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 | Screenshots, video, PDF | [screenshots-and-media.md](playwright-cli/screenshots-and-media.md) |
 | Device & environment emulation | [device-emulation.md](playwright-cli/device-emulation.md) |
 | Complex multi-step workflows | [advanced-workflows.md](playwright-cli/advanced-workflows.md) |
-
-## Language Note
-
-All guides include TypeScript and JavaScript examples. When the project uses `.js` files or has no `tsconfig.json`, examples are adapted to plain JavaScript.

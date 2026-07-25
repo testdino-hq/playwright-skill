@@ -41,7 +41,7 @@
 [![Playwright](https://img.shields.io/badge/Playwright-1.61%2B-2EAD33.svg)](https://playwright.dev)
 [![Guides](https://img.shields.io/badge/guides-70-blue.svg)](SKILL.md)
 
-Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **70 guides** with TypeScript and JavaScript examples throughout.
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **70 guides** with TypeScript examples throughout.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
