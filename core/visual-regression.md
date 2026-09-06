@@ -864,7 +864,36 @@ test.describe('Card component', () => {
 });
 ```
 
-### 11. Asserting Pseudo-Element Styles Instead of a Screenshot (Playwright 1.60+)
+### 11. WebP Snapshots (Playwright 1.62+)
+
+Playwright 1.62 supports WebP for both snapshot assertions and ad-hoc screenshots.
+
+```javascript
+await expect(page).toHaveScreenshot('homepage.webp');
+await page.screenshot({ path: 'homepage.webp', type: 'webp', quality: 50 });
+```
+
+`quality` runs 0 to 100, where **100 is lossless**. Anything below that is lossy, and that distinction decides how you use this.
+
+**For visual regression baselines, stay lossless.** A lossy baseline bakes compression artifacts into the reference image, and your pixel threshold then has to absorb both real rendering differences and codec noise. Lossless WebP is typically 20 to 30% smaller than PNG for UI screenshots at identical pixels, so it cuts repository size with no effect on comparison.
+
+**For failure artifacts, lossy is the right trade.** Screenshots captured under `screenshot: 'only-on-failure'` exist to be looked at by a human, not diffed. On a sharded suite these dominate artifact storage and upload time, and `quality: 50` to `80` cuts them dramatically while staying perfectly readable.
+
+```typescript
+// playwright.config.ts — lossless baselines, compressed failure artifacts
+export default defineConfig({
+  expect: {
+    toHaveScreenshot: { pathTemplate: '{testDir}/__screenshots__/{arg}.webp' },
+  },
+  use: {
+    screenshot: { mode: 'only-on-failure', type: 'webp', quality: 70 },
+  },
+});
+```
+
+**Do not mix formats in one baseline set.** Converting existing PNG baselines to WebP regenerates every reference image, so do it as a single deliberate commit rather than letting the 2 formats drift across the suite.
+
+### 12. Asserting Pseudo-Element Styles Instead of a Screenshot (Playwright 1.60+)
 
 **Use when**: You only care about one or two computed styles on a `::before` / `::after` pseudo-element (an icon glyph, a required asterisk, a status dot color). A targeted CSS assertion is faster and far less brittle than a pixel diff.
 **Avoid when**: The thing you're verifying is genuinely visual (layout, gradients, shadows). Keep using `toHaveScreenshot()` there.

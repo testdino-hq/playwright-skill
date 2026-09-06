@@ -63,6 +63,23 @@ test('pick a locator during debugging', async ({ page }) => {
 
 Review the suggested locator before keeping it. Prefer rewriting it to `getByRole()` or another semantic locator if that makes the test clearer.
 
+### `locator.visible()` For Visible-Only Matching (Playwright 1.63+)
+
+`locator.visible()` returns a locator narrowed to visible elements only. It replaces the `:visible` CSS pseudo-class, which was Playwright-specific syntax that only worked inside `locator()` strings and could not be chained onto a semantic locator.
+
+```javascript
+await page.locator('button').visible().click();
+```
+
+**Use it for genuinely duplicated UI**, not to paper over strict-mode violations. A responsive layout that renders both a desktop nav and a mobile nav, hiding one by media query, is the real case: both match `getByRole('link', { name: 'Settings' })`, exactly one is visible, and `.visible()` says so directly.
+
+```javascript
+// Responsive layout renders both navs; only one is visible at this viewport
+await page.getByRole('link', { name: 'Settings' }).visible().click();
+```
+
+**When it is the wrong tool**: if two visible elements match, `.visible()` does not help and you still get a strict-mode violation. Scope with chaining or `filter()` instead — see [Locator Chaining and Filtering](#locator-chaining-and-filtering). And if an element is hidden because the app has not finished rendering, `.visible()` narrows the match at query time rather than waiting for the right one to appear; assert on the expected element instead.
+
 ### `locator.normalize()` For Refactors
 
 **Use when**: You inherit brittle CSS/XPath-heavy locators and want Playwright to suggest a more idiomatic form during cleanup work.

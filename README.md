@@ -38,14 +38,14 @@
 # Playwright Skill Guides
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Playwright](https://img.shields.io/badge/Playwright-1.61%2B-2EAD33.svg)](https://playwright.dev)
+[![Playwright](https://img.shields.io/badge/Playwright-1.63%2B-2EAD33.svg)](https://playwright.dev)
 [![Guides](https://img.shields.io/badge/guides-70-blue.svg)](SKILL.md)
 
 Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **70 guides** with TypeScript and JavaScript examples throughout.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
-Playwright 1.61 coverage: WebAuthn passkey testing (`context.credentials`), the `page.localStorage` / `page.sessionStorage` Web Storage API, new video retention modes, `expect.soft.poll()`, WebSockets in HAR and traces, and `apiResponse.securityDetails()` / `serverAddr()` — plus all 1.60 features (on-demand HAR in tracing, `locator.drop()`, page-level aria snapshots, `test.abort()`, `getByRole({ description })`, `toHaveCSS({ pseudo })`) and 1.59 features.
+Playwright 1.63 coverage: test `lock` for serializing contention on a shared resource, `locator.visible()` replacing the `:visible` pseudo-class, aria and screen snapshots in traces (`snapshots: { dom, aria, screen }`), `--add-reporter` for appending rather than replacing reporters, the `perfetto` reporter, typed `request.get<User>()`, and `ariaSnapshotJSON()`. From 1.62: `reporter.preprocess()` for selecting tests before execution, `retryStrategy: 'isolated'`, WebP screenshots with a `quality` parameter, `AbortSignal` on actions and assertions, `locator.waitForFunction()`, `apiResponse.timing()`, and the stories-and-galleries component testing model that replaces the deprecated experimental CT packages. A dedicated [dynamic-test-selection.md](core/dynamic-test-selection.md) guide covers driving quarantine from an external flakiness API.
 
 ## Install
 
