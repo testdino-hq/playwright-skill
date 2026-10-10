@@ -354,6 +354,20 @@ export default defineConfig({
 
 The 1.61 modes mirror the `trace` modes, so video and trace policies can finally match. `'retain-on-failure-and-retries'` is the best default for flaky-test hunting: you get video of both the original failure *and* the retry, so you can compare the two runs.
 
+**Video quality and styling (Playwright 1.64+)**: `video` accepts an object with `fps`, and action decorations are styled with plain CSS:
+
+```typescript
+use: {
+  video: {
+    mode: 'retain-on-failure',
+    size: { width: 1280, height: 720 },
+    fps: 15,             // lower fps for CI artifacts; 30 to 60 for demos
+  },
+},
+```
+
+Videos are now encoded with **VP9 instead of VP8**: less CPU and smaller files at the same or better quality, so existing `retain-on-failure` setups get cheaper with no config change. Firefox and WebKit currently capture up to 25 fps regardless of the setting. For demo-quality recordings with styled action callouts, see [screenshots-and-media.md](../playwright-cli/screenshots-and-media.md#annotated-screencasts).
+
 ### Pattern 6: Artifact Organization for CI
 
 **Use when**: Keeping test artifacts organized and accessible in CI.

@@ -448,6 +448,15 @@ npx playwright test --project=chromium --update-snapshots
 
 4. Commit the updated snapshots with a clear message explaining why they changed.
 
+**`--update-snapshots=missing` now passes (Playwright 1.64 breaking change).** Before 1.64, a test that wrote a missing baseline still failed, so CI could not create new baselines and verify existing ones in the same run. In 1.64 the `'missing'` mode writes missing snapshots **and passes**, while existing snapshots are still compared. The mode used when you pass no option is now called `'default'` and keeps the old behavior: missing snapshots are written and the test fails.
+
+```bash
+# CI: create baselines for new tests, verify everything else, stay green
+npx playwright test --update-snapshots=missing
+```
+
+Use this for the first run of newly added visual tests in a container whose rendering matches CI. Still review and commit the generated files; a baseline nobody looked at is a regression waiting to be approved.
+
 **Tip**: Never run `--update-snapshots` in CI. Always update locally, review the diffs, and commit the new baselines.
 
 **TypeScript -- helper for controlled updates**
@@ -887,6 +896,16 @@ export default defineConfig({
   },
   use: {
     screenshot: { mode: 'only-on-failure', type: 'webp', quality: 70 },
+  },
+});
+```
+
+**Make WebP the default for unnamed snapshots (1.64+)**: `expect(page).toHaveScreenshot()` without a name previously always produced `.png`. Set `type` once in config and every unnamed baseline is stored as WebP:
+
+```typescript
+export default defineConfig({
+  expect: {
+    toHaveScreenshot: { type: 'webp' },
   },
 });
 ```

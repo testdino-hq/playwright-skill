@@ -24,6 +24,11 @@ npx playwright test --retries=3 --trace=on
 # Run in fully parallel mode to expose isolation issues
 npx playwright test --fully-parallel --workers=4
 
+# Run tests in a random order to expose order dependencies (1.64+)
+npx playwright test --shuffle
+# Reproduce a failing order with the seed printed at the start of the run
+npx playwright test --shuffle 271828182
+
 # Run all retries at the end in one worker to rule out concurrency (1.62+)
 npx playwright test --retries=2 --retry-strategy=isolated
 
@@ -378,6 +383,22 @@ const test = base.extend({
 
 module.exports = { test, expect };
 ```
+
+#### Expose Hidden Order Dependencies With `--shuffle` (Playwright 1.64+)
+
+**Before 1.64**, order dependencies hid behind the fixed scheduling order: test B only passed because test A always ran first in the same worker and left a row, a cookie, or a module-level variable behind. You found out when someone added a test, sharding changed, or a file was renamed.
+
+**1.64** adds `--shuffle`, which schedules tests in a random order and prints the seed:
+
+```bash
+npx playwright test --shuffle
+# Running 42 tests using 4 workers, shuffle seed 271828182
+
+# Same seed, same order: reproduce the failure deterministically
+npx playwright test --shuffle 271828182
+```
+
+**Practical use**: run a nightly CI job with `--shuffle` and keep the seed in the job log. A test that fails under shuffle but passes in the default order has an isolation bug; fix it with the patterns above rather than pinning the order. Do not put `--shuffle` on the PR pipeline until the suite is clean, or every PR inherits unrelated random failures.
 
 ### Fix: Environment Issues
 

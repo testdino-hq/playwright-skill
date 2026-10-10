@@ -287,7 +287,7 @@ playwright-cli run-code "async page => {
   await page.screencast.showActions({
     position: 'top-right',
     duration: 900,
-    fontSize: 20
+    style: { title: 'font-size: 20px' } // 1.64+: replaces the deprecated fontSize option
   });
   await page.screencast.showChapter('Checkout flow', {
     description: 'Verify coupon entry and updated totals',
@@ -306,6 +306,47 @@ playwright-cli run-code "async page => {
   await page.screencast.stop();
   return 'Annotated screencast saved';
 }"
+```
+
+### Smoother, Styled Recordings (Playwright 1.64+)
+
+1.64 makes recordings good enough to publish as walkthroughs:
+
+- **`fps`** on `screencast.start()`, `recordVideo` and the test `video` option. Use 30 to 60 for demos. Firefox and WebKit currently cap at 25.
+- **`showActions({ style })`** takes CSS declarations for the click `point`, the target `highlight` and the action `title`. It replaces `fontSize`, which is deprecated.
+- The cursor now stays visible at the last action point, survives navigations, and moves along an eased path, so viewers can follow it.
+- Output is VP9 instead of VP8: smaller files, less CPU.
+
+```bash
+playwright-cli run-code "async page => {
+  await page.screencast.start({
+    path: 'recordings/release-demo.webm',
+    size: { width: 1920, height: 1080 },
+    fps: 60
+  });
+  await page.screencast.showActions({
+    style: {
+      point: 'width: 20px; height: 20px; border-radius: 50%; background: red',
+      highlight: 'outline: 2px solid #333; background: rgba(0, 128, 255, .15)',
+      title: 'font-size: 16px'
+    }
+  });
+  return 'Recording at 60fps';
+}"
+```
+
+The same options work in the test runner config, so a demo spec can record itself:
+
+```typescript
+// playwright.config.ts
+use: {
+  video: {
+    mode: 'on',
+    size: { width: 1920, height: 1080 },
+    fps: 60,
+    show: { actions: { style: { title: 'font-size: 16px' } } },
+  },
+},
 ```
 
 ### When To Use Screencast vs Video Recording

@@ -4,7 +4,7 @@ description: Battle-tested Playwright patterns for writing, debugging, and scali
 license: MIT
 metadata:
   author: testdino.com
-  version: "2.5.0"
+  version: "2.6.0"
 ---
 
 # Playwright Skill
@@ -13,7 +13,9 @@ metadata:
 
 **50+ reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more — with TypeScript and JavaScript examples throughout.
 
-Playwright 1.63 highlights covered in these guides: test `lock` for serializing contention on a shared resource, `locator.visible()` replacing the `:visible` pseudo-class, aria and screen snapshots in traces (`snapshots: { dom, aria, screen }`), `--add-reporter` for appending rather than replacing reporters, the `perfetto` reporter, typed `request.get<User>()`, and `ariaSnapshotJSON()`. From 1.62: `reporter.preprocess()` for selecting tests before execution, `retryStrategy: 'isolated'`, WebP screenshots with a `quality` parameter, `AbortSignal` on actions and assertions, `locator.waitForFunction()`, `apiResponse.timing()`, and the stories-and-galleries component testing model that replaces the deprecated experimental CT packages. A dedicated [dynamic-test-selection.md](core/dynamic-test-selection.md) guide covers driving quarantine from an external flakiness API.
+Playwright 1.64 highlights covered in these guides: `locator.within()` for combining a target and a container locator (with per-parent `nth()` for column queries), WebMCP testing via `page.webmcp.tools()` / `callTool()` in a dedicated [webmcp-testing.md](core/webmcp-testing.md) guide, `--shuffle` for exposing order-dependent tests, `default: false` projects with `--project="*"` and `config.filteredProjects`, `test.describe.configure({ lock })`, 60fps videos with CSS-styled action callouts and VP9 encoding, `toHaveScreenshot: { type: 'webp' }`, `page.getByRef()`, `APIRequestContext` cookie methods, passkey `signCount`, and `page.content({ includeShadow })`. Breaking changes flagged where they bite: device `screen` forwarding, `--update-snapshots=missing` now passing, elements in hidden iframes counting as hidden, and JSX following `tsconfig.json`.
+
+From 1.63: test `lock` for serializing contention on a shared resource, `locator.visible()` replacing the `:visible` pseudo-class, aria and screen snapshots in traces (`snapshots: { dom, aria, screen }`), `--add-reporter` for appending rather than replacing reporters, the `perfetto` reporter, typed `request.get<User>()`, and `ariaSnapshotJSON()`. From 1.62: `reporter.preprocess()` for selecting tests before execution, `retryStrategy: 'isolated'`, WebP screenshots with a `quality` parameter, `AbortSignal` on actions and assertions, `locator.waitForFunction()`, `apiResponse.timing()`, and the stories-and-galleries component testing model that replaces the deprecated experimental CT packages. A dedicated [dynamic-test-selection.md](core/dynamic-test-selection.md) guide covers driving quarantine from an external flakiness API.
 
 Earlier releases remain covered: 1.61 (WebAuthn passkeys via `context.credentials`, `page.localStorage` / `page.sessionStorage`, video retention modes, `expect.soft.poll()`, WebSockets in HAR and traces), 1.60 (on-demand HAR in tracing, `locator.drop()`, page-level aria snapshots, `test.abort()`), and 1.59 (screencast recording, CLI debugging and trace analysis). A dedicated [trace-analysis.md](core/trace-analysis.md) guide covers agent-native debugging of `trace.zip` reports with the `npx playwright trace` CLI.
 
@@ -127,6 +129,7 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 | Service workers & PWA | [service-workers-and-pwa.md](core/service-workers-and-pwa.md) |
 | Electron apps | [electron-testing.md](core/electron-testing.md) |
 | Browser extensions | [browser-extensions.md](core/browser-extensions.md) |
+| WebMCP agent tools | [webmcp-testing.md](core/webmcp-testing.md) |
 | Security testing | [security-testing.md](core/security-testing.md) |
 | Performance & benchmarks | [performance-testing.md](core/performance-testing.md) |
 | i18n & localization | [i18n-and-localization.md](core/i18n-and-localization.md) |
