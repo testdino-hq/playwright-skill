@@ -249,6 +249,12 @@ test('update user settings', { lock: 'user-settings' }, async ({ page }) => {
 
 Tests holding the same lock name never run concurrently, regardless of which file or worker they live in. Everything else in the suite keeps running in parallel.
 
+**Locking a whole file or group (1.64+)**: when every test in a file or `describe` touches the resource, set the lock once instead of repeating it per test:
+
+```javascript
+test.describe.configure({ lock: 'user-settings' });
+```
+
 **Choose the lock name for the resource, not the feature.** `'user-settings'` is right if that is the row being mutated. Naming it after the spec file recreates `describe.serial()` with extra steps.
 
 **A lock is not isolation.** It prevents overlap; it does not reset state between holders. Each test still has to leave the resource in a state the next holder can use, or seed what it needs. See Pattern 5 above.

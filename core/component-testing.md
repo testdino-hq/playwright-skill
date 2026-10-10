@@ -41,6 +41,8 @@ Existing suites on these packages keep running on a pinned Playwright version, b
 
 The patterns in the rest of this guide were written against the experimental `mount()` API. The testing concepts still hold — what to assert, when a component test beats an E2E test, how to handle providers and slots — but the mounting calls need translating to stories. Check the [official component testing docs](https://playwright.dev/docs/test-components) for the current `mount()` signature before copying a snippet verbatim.
 
+> **Playwright 1.64**: JSX in test files now follows your `tsconfig.json` (`jsx`, `jsxFactory`, `jsxFragmentFactory`, `jsxImportSource`) and defaults to the automatic runtime from `react/jsx-runtime`. If component tests break after upgrading with errors about `React` not being in scope or the wrong factory, set these options in the tsconfig that covers your tests rather than relying on the old implicit behavior.
+
 ## Patterns
 
 ### 1. Setup and Configuration

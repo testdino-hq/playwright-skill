@@ -38,14 +38,16 @@
 # Playwright Skill Guides
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Playwright](https://img.shields.io/badge/Playwright-1.63%2B-2EAD33.svg)](https://playwright.dev)
-[![Guides](https://img.shields.io/badge/guides-70-blue.svg)](SKILL.md)
+[![Playwright](https://img.shields.io/badge/Playwright-1.64%2B-2EAD33.svg)](https://playwright.dev)
+[![Guides](https://img.shields.io/badge/guides-72-blue.svg)](SKILL.md)
 
-Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **70 guides** with TypeScript and JavaScript examples throughout.
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **72 guides** with TypeScript and JavaScript examples throughout.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
-Playwright 1.63 coverage: test `lock` for serializing contention on a shared resource, `locator.visible()` replacing the `:visible` pseudo-class, aria and screen snapshots in traces (`snapshots: { dom, aria, screen }`), `--add-reporter` for appending rather than replacing reporters, the `perfetto` reporter, typed `request.get<User>()`, and `ariaSnapshotJSON()`. From 1.62: `reporter.preprocess()` for selecting tests before execution, `retryStrategy: 'isolated'`, WebP screenshots with a `quality` parameter, `AbortSignal` on actions and assertions, `locator.waitForFunction()`, `apiResponse.timing()`, and the stories-and-galleries component testing model that replaces the deprecated experimental CT packages. A dedicated [dynamic-test-selection.md](core/dynamic-test-selection.md) guide covers driving quarantine from an external flakiness API.
+Playwright 1.64 coverage: `locator.within()` for combining a target and a container locator (with per-parent `nth()` for column queries), WebMCP testing via `page.webmcp.tools()` / `callTool()` in a dedicated [webmcp-testing.md](core/webmcp-testing.md) guide, `--shuffle` for exposing order-dependent tests, `default: false` projects with `--project="*"` and `config.filteredProjects`, `test.describe.configure({ lock })`, 60fps videos with CSS-styled action callouts and VP9 encoding, `toHaveScreenshot: { type: 'webp' }`, `page.getByRef()`, `APIRequestContext` cookie methods, passkey `signCount`, and `page.content({ includeShadow })`. Breaking changes flagged where they bite: device `screen` forwarding, `--update-snapshots=missing` now passing, elements in hidden iframes counting as hidden, and JSX following `tsconfig.json`.
+
+From 1.63: test `lock` for serializing contention on a shared resource, `locator.visible()` replacing the `:visible` pseudo-class, aria and screen snapshots in traces (`snapshots: { dom, aria, screen }`), `--add-reporter` for appending rather than replacing reporters, the `perfetto` reporter, typed `request.get<User>()`, and `ariaSnapshotJSON()`. From 1.62: `reporter.preprocess()` for selecting tests before execution, `retryStrategy: 'isolated'`, WebP screenshots with a `quality` parameter, `AbortSignal` on actions and assertions, `locator.waitForFunction()`, `apiResponse.timing()`, and the stories-and-galleries component testing model that replaces the deprecated experimental CT packages. A dedicated [dynamic-test-selection.md](core/dynamic-test-selection.md) guide covers driving quarantine from an external flakiness API.
 
 ## Install
 
@@ -72,7 +74,7 @@ npx skills add testdino-hq/playwright-skill/playwright-cli
 
 | Pack | Guides | What's covered |
 |---|:---:|---|
-| **core** | 47 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, trace-report analysis, framework recipes, architecture decisions |
+| **core** | 49 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, trace-report analysis, framework recipes, architecture decisions |
 | **ci** | 9 | GitHub Actions, GitLab CI, CircleCI, Azure DevOps, Jenkins, Docker, sharding, reporting, coverage |
 | **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
@@ -164,6 +166,7 @@ The foundation: writing, debugging, and maintaining reliable tests. New to Playw
 | [clock-and-time-mocking.md](core/clock-and-time-mocking.md) | Fake timers, date mocking |
 | [service-workers-and-pwa.md](core/service-workers-and-pwa.md) | PWA testing, offline mode |
 | [browser-extensions.md](core/browser-extensions.md) | Extension testing patterns |
+| [webmcp-testing.md](core/webmcp-testing.md) | Testing agent tools a page exposes via WebMCP (1.64+) |
 | [third-party-integrations.md](core/third-party-integrations.md) | Testing against third-party services |
 | [i18n-and-localization.md](core/i18n-and-localization.md) | Multi-language, RTL, locale testing |
 

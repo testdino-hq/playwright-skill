@@ -1023,6 +1023,12 @@ await context.credentials.install();
 
 You can also seed a credential your backend already provisioned for a test user by passing `id`, `userHandle`, `privateKey` (base64url PKCS#8), and `publicKey` (base64url SPKI) to `credentials.create(rpId, …)`, and remove one with `credentials.delete(id)`.
 
+**Signature counter (1.64+)**: `credentials.create()` accepts `signCount` to set the authenticator's initial counter, and `create()` / `get()` return the current value. The counter is saved and restored with the credentials in storage state. Use it to test that your server rejects a replayed or cloned authenticator whose counter goes backwards:
+
+```typescript
+await context.credentials.create(credential.rpId, { ...credential, signCount: 100 });
+```
+
 **Tips:**
 - Treat saved passkey JSON like a saved `storageState` — it contains a private key, so keep it out of version control (`.gitignore` the `.auth/` directory).
 - Combine with a setup project (see Recipe 1) so passkey enrollment happens once per run, not per test.

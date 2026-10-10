@@ -443,6 +443,23 @@ test('listen for custom events from web components', async ({ page }) => {
 });
 ```
 
+### Hidden Iframes Hide Their Content (Playwright 1.64 Breaking Change)
+
+Elements inside an iframe that is not visible, for example styled `visibility: hidden`, are now considered **hidden** by actions, `locator.isVisible()` and `toBeVisible()`. Before 1.64 they could report as visible because only the element itself was checked.
+
+If a test starts failing after the upgrade with a "not visible" error inside a frame, check the iframe element itself. Usually the test was clicking into a frame the user could not see, which was a false pass; show the frame first (open the panel, switch the tab) and then interact.
+
+### Serializing Shadow DOM With `page.content()` (Playwright 1.64+)
+
+`page.content()` and `frame.content()` returned light DOM only, so HTML snapshots of web-component apps were missing most of their markup. Pass `includeShadow: true` to serialize open shadow roots as [declarative shadow DOM](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_shadow_DOM#declaratively_with_html):
+
+```typescript
+const html = await page.content({ includeShadow: true });
+// <my-card><template shadowrootmode="open">...</template></my-card>
+```
+
+Useful for attaching a full HTML snapshot to a failing test, or feeding a component's rendered markup to an HTML validator.
+
 ## Decision Guide
 
 | Scenario | Approach | Why |

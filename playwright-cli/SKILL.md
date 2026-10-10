@@ -171,6 +171,13 @@ playwright-cli tracing-stop                 # Stop and save trace
 playwright-cli run-code "async page => {}"  # Execute Playwright API code
 ```
 
+### WebMCP (Playwright 1.64+)
+
+```bash
+playwright-cli webmcp-list                                         # List tools the page registers via WebMCP
+playwright-cli webmcp-call <tool> --params '{"key":"value"}'      # Call a page tool with JSON arguments
+```
+
 ### Sessions & Configuration
 
 ```bash

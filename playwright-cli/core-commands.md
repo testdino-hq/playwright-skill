@@ -366,6 +366,17 @@ playwright-cli snapshot
 playwright-cli close                # Closes all tabs
 ```
 
+## WebMCP Tools (Playwright 1.64+)
+
+Pages can register tools for AI agents through the experimental WebMCP API. List and call them straight from the CLI:
+
+```bash
+playwright-cli webmcp-list
+playwright-cli webmcp-call search_catalog --params '{"query":"cats"}'
+```
+
+Calling a tool is the fastest way to check that it is wired to real app state: call it, then `snapshot` to see the page update. For writing tests against these tools, see [core/webmcp-testing.md](../core/webmcp-testing.md).
+
 ## Tips
 
 - **Snapshot frequently**: After every action that changes the page, re-snapshot to get fresh refs

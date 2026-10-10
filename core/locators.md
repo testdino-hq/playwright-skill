@@ -80,6 +80,44 @@ await page.getByRole('link', { name: 'Settings' }).visible().click();
 
 **When it is the wrong tool**: if two visible elements match, `.visible()` does not help and you still get a strict-mode violation. Scope with chaining or `filter()` instead — see [Locator Chaining and Filtering](#locator-chaining-and-filtering). And if an element is hidden because the app has not finished rendering, `.visible()` narrows the match at query time rather than waiting for the right one to appear; assert on the expected element instead.
 
+### `locator.within()` For Combining Two Locators (Playwright 1.64+)
+
+**Use when**: You already hold two locators, a target and a container, and want "this button, within that dialog" without rewriting either.
+**Avoid when**: A plain chain reads just as well: `dialog.getByRole('button', { name: 'Save' })` is still the default.
+
+**Before 1.64** you could only scope by chaining from the container: `container.getByRole(...)`. That forces you to build the target from the container, so a reusable target locator (from a page object, a fixture, or a helper) had to be re-declared for each container it lived in.
+
+**1.64** adds `target.within(container)`, which reads in the natural order and reuses both locators as they are:
+
+```javascript
+const saveButton = page.getByRole('button', { name: 'Save' });
+const dialog = page.getByTestId('settings-dialog');
+
+await saveButton.within(dialog).click();
+```
+
+**Column-like queries**: relative parts such as `nth()` or `first()` are resolved **inside each parent separately**. That turns "the third cell of every row" into one locator instead of a loop:
+
+```javascript
+// The third cell of every row, not the third cell in the whole table
+const thirdColumn = page.getByRole('cell').nth(2).within(page.getByRole('row'));
+await expect(thirdColumn).toHaveText(['Apple', 'Banana', 'Cherry']);
+```
+
+Compare `page.getByRole('row').getByRole('cell').nth(2)`, which picks the third cell across the whole result set. When you mean "per row", use `within()`.
+
+### `page.getByRef()` For Aria Snapshot Refs (Playwright 1.64+)
+
+`page.ariaSnapshot({ mode: 'ai' })` labels each element with a short ref such as `e2`. `page.getByRef('e2')` turns that ref back into a locator. This is the bridge between an agent that reads the snapshot and test code that acts on it.
+
+```javascript
+const snapshot = await page.ariaSnapshot({ mode: 'ai' });
+// ... an agent picks "e2" from the snapshot ...
+await page.getByRef('e2').click();
+```
+
+Refs are tied to one snapshot of one page state. Use them inside agent loops and exploration scripts; in committed tests, rewrite the target as `getByRole()` so the test survives a re-render.
+
 ### `locator.normalize()` For Refactors
 
 **Use when**: You inherit brittle CSS/XPath-heavy locators and want Playwright to suggest a more idiomatic form during cleanup work.
