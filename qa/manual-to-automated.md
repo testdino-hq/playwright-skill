@@ -39,7 +39,7 @@ Manual case:
 > **TC-42 Login with valid credentials**. Preconditions: user exists. Steps: 1. Open /login 2. Enter email 3. Enter password 4. Click Sign in. Expected: dashboard shows "Welcome back".
 
 ```typescript
-import { test, expect } from './fixtures'; // provides a seeded `user`
+import { test, expect } from './fixtures'; // provides a seeded `user` (Pattern 3)
 
 test('TC-42 login with valid credentials', {
   tag: '@smoke',
@@ -66,11 +66,24 @@ Re-running those UI steps in every test makes the suite slow and makes every tes
 
 ```typescript
 // tests/fixtures.ts
-import { test as base } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
+import { test as base, expect } from '@playwright/test';
 
-export const test = base.extend<{ project: { id: string; name: string } }>({
+type User = { id: string; email: string; password: string };
+type Project = { id: string; name: string };
+
+export const test = base.extend<{ user: User; project: Project }>({
+  user: async ({ request }, use) => {
+    const data = { email: `qa+${randomUUID()}@example.com`, password: randomUUID() };
+    const res = await request.post('/api/users', { data });
+    expect(res.ok(), `seeding user failed: ${res.status()}`).toBeTruthy();
+    const user = { ...data, ...(await res.json()) };
+    await use(user);
+    await request.delete(`/api/users/${user.id}`);
+  },
   project: async ({ request }, use) => {
-    const res = await request.post('/api/projects', { data: { name: `qa-${Date.now()}` } });
+    const res = await request.post('/api/projects', { data: { name: `qa-${randomUUID()}` } });
+    expect(res.ok(), `seeding project failed: ${res.status()}`).toBeTruthy();
     const project = await res.json();
     await use(project);
     await request.delete(`/api/projects/${project.id}`);
@@ -86,7 +99,7 @@ Log in once per role with a setup project and `storageState` ([authentication.md
 **Use when**: Reporting automated results against the manual suite.
 
 Put the ID in two places:
-- **Title prefix** (`TC-42 ...`): visible everywhere, and `npx playwright test --grep TC-42` runs one case.
+- **Title prefix** (`TC-42 ...`): visible everywhere, and `npx playwright test --grep "TC-42 "` runs one case (the trailing space stops it matching TC-420 to TC-429; `--grep` is an unanchored regex).
 - **Annotation** `{ type: 'testcase', description: 'TC-42' }`: structured, so the JSON reporter output and custom reporters can map results back without parsing titles.
 
 ```typescript

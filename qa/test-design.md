@@ -34,16 +34,16 @@
 | DC-01 | Valid 4-char and 12-char codes | Boundary | Discount applied | API |
 | DC-02 | 3-char and 13-char codes | Boundary | Validation error, no discount | API |
 | DC-03 | Code with `-` or a space | Partition (invalid class) | Validation error | API |
-| DC-04 | Code used at 23:59:59 UTC on end date | Time boundary | Applied | API (fixed clock) |
-| DC-05 | Code used at 00:00:00 UTC next day | Time boundary | "Code expired" | API (fixed clock) |
-| DC-06 | Browser in UTC-8 at 17:00 local on end date | Time boundary | Rejected (already past UTC midnight) | E2E with `timezoneId` + `page.clock` |
+| DC-04 | Code whose end date is today (UTC) | Time boundary | Applied | API (code seeded with end date = today) |
+| DC-05 | Code whose end date was yesterday (UTC) | Time boundary | "Code expired" | API (code seeded with end date = yesterday) |
+| DC-06 | Expiry shown to a user in UTC-8 | Time boundary (display) | Shows the UTC-midnight end in local time, not the local date | E2E with `timezoneId` |
 | DC-07 | Last remaining use, then one more | Counter boundary | First applied, second "limit reached" | API |
 | DC-08 | Apply a second code when one is applied | Rule ("one code") | Second rejected or replaces the first, per spec | E2E |
 | DC-09 | Happy path: apply code, total updates, order shows discount | Flow | Correct total on review and confirmation | E2E |
 
 DC-08 exposes an ambiguity ("rejected or replaces?"). Raise it with the product owner instead of guessing; an unanswered question is a finding.
 
-For clock control see [clock-and-time-mocking.md](../core/clock-and-time-mocking.md); for the browser timezone, `use: { timezoneId: 'America/Los_Angeles' }`.
+Server-side time can't be faked from Playwright: `page.clock` only changes the browser's `Date`. For the exact-second boundary (23:59:59 vs 00:00:00 UTC) the app needs a test hook, such as an injectable clock or a test-only time endpoint; otherwise seed codes with end dates relative to now, as DC-04 and DC-05 do. Use `page.clock` only where the browser computes the time, such as an "expires in 3 hours" countdown ([clock-and-time-mocking.md](../core/clock-and-time-mocking.md)). For the browser timezone, `use: { timezoneId: 'America/Los_Angeles' }`.
 
 ### Pattern 2: Rank by Risk Before Automating
 
@@ -72,31 +72,40 @@ A password-reset feature, for example: token expiry, reuse and weak-password rul
 
 **Use when**: The plan will be turned into Playwright tests by an agent (yours or Playwright's generator).
 
-Save to `specs/<feature>.md`. Each scenario names its seed, numbered user-level steps, and expected results the generator turns into assertions:
+Save to `specs/<feature>.md` in the same shape Playwright's planner writes (1.64), so hand-written and generated plans look alike. Each `###` group becomes a `test.describe`, each `####` scenario a test in its `**File:**`, and each `- expect:` line an assertion after that step:
 
 ```markdown
 # Cart - Test Plan
 
-### 1. Add item to cart
+## Application Overview
+
+Shop cart: add products, see the badge count, check out.
+
+## Test Scenarios
+
+### 1. Cart
+
 **Seed:** `tests/seed.spec.ts`
 
-**Steps:**
-1. Open the product page for "Blue Mug"
-2. Click "Add to cart"
+#### 1.1. Add item to cart
 
-**Expected Results:**
-- Cart badge shows "1"
-- Cart page lists "Blue Mug" with quantity 1
-
-### 2. Empty cart message
-**Seed:** `tests/seed.spec.ts`
+**File:** `tests/cart/add-item.spec.ts`
 
 **Steps:**
-1. Open the cart with no items
+  1. Open the product page for "Blue Mug"
+  2. Click "Add to cart"
+    - expect: Cart badge shows "1"
+  3. Open the cart
+    - expect: Cart lists "Blue Mug" with quantity 1
 
-**Expected Results:**
-- "Your cart is empty" is visible
-- Checkout button is disabled
+#### 1.2. Empty cart message
+
+**File:** `tests/cart/empty-cart.spec.ts`
+
+**Steps:**
+  1. Open the cart with no items
+    - expect: "Your cart is empty" is visible
+    - expect: The Checkout button is disabled
 ```
 
 Write expected results as observable facts ("badge shows 1"), not intentions ("cart works"). See [test-agents.md](../core/test-agents.md) for running the generator.

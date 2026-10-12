@@ -67,7 +67,7 @@ Rules for each field:
 - **Severity** is user impact (blocker, high, medium, low); priority is the team's call.
 - **Frequency** from `--repeat-each`, never "sometimes".
 - **Actual** names the observable failure and the evidence behind it (status code, console error), not the test's assertion message.
-- **Regression**: the last passing commit or build, if CI history shows one. `git bisect` with the single test (`npx playwright test tests/checkout.spec.ts:42`) as the check finds the commit.
+- **Regression**: the last passing commit or build, if CI history shows one. `git bisect run npx playwright test -g "pay with expired saved card"` finds the commit; filter by title, because a `file:line` filter breaks when the line moves between commits.
 
 ### Pattern 3: Keep the Test While the Bug Is Open
 

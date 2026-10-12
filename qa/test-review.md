@@ -7,7 +7,7 @@
 
 ```bash
 # Run only the changed tests, repeatedly and in parallel, before approving
-npx playwright test --only-changed=origin/main --repeat-each=5 --fully-parallel
+npx playwright test --only-changed=origin/main --repeat-each=10 --fully-parallel
 
 # Fail CI if a test.only slipped in
 npx playwright test --forbid-only
