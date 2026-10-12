@@ -47,16 +47,16 @@ class QuarantineReporter {
 export default QuarantineReporter;
 ```
 
-`testRun` can mark a test as **skipped**, **excluded**, **fixed**, or **failing**. The distinction matters:
+`testRun` can **skip**, **exclude**, **fixme** or **fail** a test. The distinction matters:
 
 | Mark | Test executes? | Appears in report? | Use for |
 |---|---|---|---|
 | `skip` | No | Yes, as skipped | Quarantined tests you still want counted |
 | `exclude` | No | No | Tests irrelevant to this run (wrong shard, wrong tag) |
-| `fixed` | Yes | Yes | A test you expect to now pass; fails the run if it does not |
-| `failing` | Yes | Yes | Known-broken; fails the run if it unexpectedly passes |
+| `fixme` | No | Yes, as skipped | Known-broken tests you intend to fix; nothing runs |
+| `fail` | Yes | Yes | Known-broken; fails the run if it unexpectedly passes |
 
-`failing` is the one people miss. It runs the test, expects red, and alerts you when it goes green — which is how a quarantine list shrinks on its own instead of rotting.
+`fail` is the one people miss. It runs the test, expects red, and alerts you when it goes green — which is how a quarantine list shrinks on its own instead of rotting.
 
 **Why this beats `--grep`**: the hook sees `TestCase` objects, so you can match on file path, title path, tags, annotations, or project — not just a title regex. Nothing needs escaping, and a renamed test fails loudly at lookup instead of silently falling out of a pattern.
 
@@ -187,7 +187,7 @@ That guard matters. An auto-quarantine with no exemption list will eventually si
 
 ## Anti-Patterns
 
-**Auto-quarantining with no exit path.** A list that only grows is a list nobody reads. Use `failing` rather than `skip` so a recovered test surfaces itself, and alert when the list does not shrink month over month.
+**Auto-quarantining with no exit path.** A list that only grows is a list nobody reads. Use `fail` rather than `skip` so a recovered test surfaces itself, and alert when the list does not shrink month over month.
 
 **Letting the reporter's network call fail the run.** Wrap the fetch, set a timeout, and default to selecting nothing.
 

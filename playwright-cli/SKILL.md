@@ -132,8 +132,8 @@ playwright-cli screenshot                    # Screenshot current page
 playwright-cli screenshot <ref>              # Screenshot specific element
 playwright-cli screenshot --filename=pg.png  # Save with custom filename
 playwright-cli pdf --filename=page.pdf       # Save page as PDF
-playwright-cli video-start                   # Start video recording
-playwright-cli video-stop output.webm        # Stop and save video
+playwright-cli video-start output.webm      # Start recording to a file
+playwright-cli video-stop                    # Stop and save the video
 playwright-cli resize 1920 1080              # Resize viewport
 ```
 
@@ -172,7 +172,7 @@ playwright-cli unroute                       # Remove all routes
 
 ```bash
 playwright-cli console [level]              # Show console messages
-playwright-cli network                      # Show network requests
+playwright-cli requests                     # Show network requests
 playwright-cli tracing-start                # Start trace recording
 playwright-cli tracing-stop                 # Stop and save trace
 playwright-cli run-code "async page => {}"  # Execute Playwright API code
@@ -197,7 +197,7 @@ playwright-cli open --browser=firefox       # Use specific browser
 playwright-cli open --persistent            # Persist profile to disk
 playwright-cli open --profile=/path         # Custom profile directory
 playwright-cli open --config=config.json    # Use config file
-playwright-cli open --extension             # Connect via extension
+playwright-cli attach --extension           # Connect via extension
 ```
 
 ## Guide Index

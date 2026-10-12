@@ -714,7 +714,7 @@ jobs:
 
 ```bash
 # Generate/update snapshots using the same container as CI
-docker run --rm -v $(pwd):/work -w /work \
+docker run --rm --init --ipc=host -v $(pwd):/work -w /work \
   mcr.microsoft.com/playwright:v1.64.0-noble \
   npx playwright test --update-snapshots --project=visual
 ```
@@ -725,7 +725,7 @@ docker run --rm -v $(pwd):/work -w /work \
 {
   "scripts": {
     "test:visual": "npx playwright test --project=visual",
-    "test:visual:update": "docker run --rm -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.64.0-noble npx playwright test --update-snapshots --project=visual"
+    "test:visual:update": "docker run --rm --init --ipc=host -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.64.0-noble npx playwright test --update-snapshots --project=visual"
   }
 }
 ```
@@ -974,7 +974,7 @@ This complements visual snapshots: use it to lock down specific pseudo-element s
 **Fix**: Generate snapshots using Docker locally so they match CI:
 
 ```bash
-docker run --rm -v $(pwd):/work -w /work \
+docker run --rm --init --ipc=host -v $(pwd):/work -w /work \
   mcr.microsoft.com/playwright:v1.64.0-noble \
   npx playwright test --update-snapshots --project=visual
 ```

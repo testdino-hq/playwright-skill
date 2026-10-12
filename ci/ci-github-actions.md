@@ -320,6 +320,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
+      options: --ipc=host
 
     steps:
       - uses: actions/checkout@v7

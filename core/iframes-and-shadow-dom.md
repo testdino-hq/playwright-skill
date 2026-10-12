@@ -482,7 +482,7 @@ The rest of the locator still resolves inside a single frame, and it throws if t
 | Open Shadow DOM | Standard locators -- no changes needed | Playwright pierces open shadow roots by default |
 | Closed Shadow DOM | `addInitScript` to override `attachShadow` | Forces closed roots to open before page loads |
 | Slotted content in Web Components | Locate within the custom element tag | Slotted content is light DOM, accessible normally |
-| Non-piercing CSS (rare) | No built-in engine: the `:light` suffix was removed in 1.58 | Scope from a light-DOM parent or check in `evaluate()` |
+| Non-piercing CSS (rare) | Avoid `css:light=`: undocumented and listed as removed in the 1.58 notes, though 1.64 still parses it | Scope from a light-DOM parent or check in `evaluate()` |
 
 ## Anti-Patterns
 

@@ -287,6 +287,8 @@ await button.click(); // works fine
 
 **Cause**: The element was found in the DOM but was not actionable within the timeout. "Actionable" means visible, stable (not animating), enabled, and not obscured by another element.
 
+Under Playwright Test this message appears only when a timeout is set for the call or in config (`actionTimeout`, `navigationTimeout`, `timeout` option); with the defaults (0) the test instead fails with `Test timeout of 30000ms exceeded.`
+
 **Common triggers**:
 - An overlay, modal, or toast is covering the element
 - The element is disabled (`disabled` attribute or `aria-disabled="true"`)
@@ -493,6 +495,8 @@ module.exports = defineConfig({
 
 **Cause**: The page did not reach the `load` state (by default) within the navigation timeout. The server responded but the page took too long to fully load.
 
+Under Playwright Test this message appears only when a timeout is set for the call or in config (`actionTimeout`, `navigationTimeout`, `timeout` option); with the defaults (0) the test instead fails with `Test timeout of 30000ms exceeded.`
+
 **Common triggers**:
 - Large assets (images, fonts, scripts) slow the page load
 - Third-party scripts (analytics, ads) blocking the load event
@@ -589,6 +593,8 @@ test('navigates to dashboard', async ({ page }) => {
 ### "page.waitForNavigation: Timeout 30000ms exceeded"
 
 **Cause**: `waitForNavigation()` waited for a full page navigation that never happened. In SPAs, client-side routing does not trigger a navigation event.
+
+Under Playwright Test this message appears only when a timeout is set for the call or in config (`actionTimeout`, `navigationTimeout`, `timeout` option); with the defaults (0) the test instead fails with `Test timeout of 30000ms exceeded.`
 
 **Common triggers**:
 - Using `waitForNavigation()` with a SPA that uses React Router, Vue Router, or Next.js client-side navigation
@@ -828,7 +834,7 @@ expect(sanitized).toMatchSnapshot('dashboard-content.txt');
 ```bash
 npx playwright test --update-snapshots=missing
 # Linux baselines from macOS/Windows: run inside the official image
-docker run --rm -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.64.0-noble npx playwright test --update-snapshots
+docker run --rm --init --ipc=host -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.64.0-noble npx playwright test --update-snapshots
 ```
 
 **Related**: [core/visual-regression.md](visual-regression.md)
@@ -853,8 +859,8 @@ npx playwright test       # never node tests/example.spec.ts
 ```
 
 ```typescript
-// TypeScript — BAD: async describe
-test.describe('suite', async () => { test('a', async () => {}); });
+// TypeScript — BAD: test() after an await inside an async describe
+test.describe('suite', async () => { await setup(); test('a', async () => {}); });
 // GOOD
 test.describe('suite', () => { test('a', async () => {}); });
 ```
@@ -1631,6 +1637,8 @@ await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome');
 ### "Error: page.waitForSelector: Timeout 30000ms exceeded"
 
 **Cause**: `page.waitForSelector()` timed out. This method is discouraged in favor of web-first assertions or `locator.waitFor()`.
+
+Under Playwright Test this message appears only when a timeout is set for the call or in config (`actionTimeout`, `navigationTimeout`, `timeout` option); with the defaults (0) the test instead fails with `Test timeout of 30000ms exceeded.`
 
 **Common triggers**:
 - Using legacy `page.waitForSelector()` from older tutorials or migration from Puppeteer
