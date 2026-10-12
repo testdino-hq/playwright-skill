@@ -1,17 +1,17 @@
 ---
 name: playwright-skill
-description: Current Playwright (1.64) patterns for writing, debugging, and scaling reliable test suites. Use for any Playwright task, even ones you think you know, because the guides cover APIs and CLI flags newer than most training data. Covers writing or fixing tests, locators, a failing or flaky test, a trace.zip or error message, playwright.config and projects, network mocking, auth, visual and accessibility testing, Docker and CI sharding, playwright-cli browser automation, Playwright Test Agents, page objects, and migrating from Cypress or Selenium. TypeScript and JavaScript.
+description: Current Playwright (1.64) patterns for writing, debugging, and scaling reliable test suites. Use for any Playwright task, even ones you think you know, because the guides cover APIs and CLI flags newer than most training data. Covers writing or fixing tests, locators, a failing or flaky test, a trace.zip or error message, playwright.config and projects, network mocking, auth, visual and accessibility testing, Docker and CI sharding, playwright-cli browser automation, Playwright Test Agents, page objects, migrating from Cypress or Selenium, and QA work: test case design, bug reports from failures, automating manual test cases, and reviewing tests. TypeScript and JavaScript.
 license: MIT
 metadata:
   author: testdino.com
-  version: "2.7.0"
+  version: "2.8.0"
 ---
 
 # Playwright Skill
 
 > Opinionated, production-tested Playwright guidance — every pattern includes when (and when *not*) to use it.
 
-**75 reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more.
+**79 reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more.
 
 **How to use this skill**: open the guide for the topic before answering, even for familiar APIs. Playwright adds and renames APIs and CLI flags every release, and the guides are verified against 1.64. Guides tag newer APIs with the release that added them, e.g. `(1.62+)`; check the project's version (`npx playwright --version`) before using one.
 
@@ -93,6 +93,15 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 |---|---|
 | Adding valid, unique, stable `data-testid` attributes | [frontend/data-testid-conventions.md](frontend/data-testid-conventions.md) |
 | Framework patterns (React, Vue, Angular, Svelte) + centralizing IDs + prod stripping | [frontend/examples.md](frontend/examples.md) |
+
+### QA Workflows
+
+| What you're doing | Guide |
+|---|---|
+| Ticket / acceptance criteria → test cases, risk ranking, test plan | [test-design.md](qa/test-design.md) |
+| Failing test → bug report; app bug vs test bug vs flake | [bug-reports.md](qa/bug-reports.md) |
+| Manual test cases / CSV export → Playwright specs | [manual-to-automated.md](qa/manual-to-automated.md) |
+| Review Playwright tests or a PR | [test-review.md](qa/test-review.md) |
 
 ### Debugging & Fixing
 
