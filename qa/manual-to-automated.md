@@ -77,7 +77,7 @@ export const test = base.extend<{ user: User; project: Project }>({
     const data = { email: `qa+${randomUUID()}@example.com`, password: randomUUID() };
     const res = await request.post('/api/users', { data });
     expect(res.ok(), `seeding user failed: ${res.status()}`).toBeTruthy();
-    const user = { ...data, ...(await res.json()) };
+    const user = { ...(await res.json()), ...data }; // keep our plaintext password
     await use(user);
     await request.delete(`/api/users/${user.id}`);
   },
