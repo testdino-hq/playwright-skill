@@ -130,7 +130,7 @@ import { test } from '@playwright/test';
 
 test('payment integration', async ({ context, page }, testInfo) => {
   const harPath = testInfo.outputPath('payment.har');
-  await context.tracing.startHar({ path: harPath, urlFilter: '**/payments/**' });
+  await context.tracing.startHar(harPath, { urlFilter: '**/payments/**' });
 
   await page.goto('/checkout');
   await page.getByRole('button', { name: 'Pay' }).click();
@@ -398,7 +398,7 @@ blob-report/              # Blob report for shard merging
 
 ```yaml
 # Upload HTML report (always -- useful even when tests pass)
-- uses: actions/upload-artifact@v4
+- uses: actions/upload-artifact@v7
   if: ${{ !cancelled() }}
   with:
     name: playwright-report
@@ -406,7 +406,7 @@ blob-report/              # Blob report for shard merging
     retention-days: 14
 
 # Upload traces and screenshots (only on failure -- saves storage)
-- uses: actions/upload-artifact@v4
+- uses: actions/upload-artifact@v7
   if: failure()
   with:
     name: test-traces
@@ -551,8 +551,9 @@ reporter: [['junit', { outputFile: 'test-results/junit.xml' }]],
 
 ```yaml
 # GitHub Actions
-- uses: dorny/test-reporter@v1
+- uses: dorny/test-reporter@v3
   with:
+    name: Playwright Tests
     path: test-results/junit.xml
     reporter: java-junit
 

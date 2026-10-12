@@ -158,7 +158,7 @@ test('form-urlencoded body', async ({ request }) => {
 
 **Typed responses (1.63+)** — pass a type argument so the parsed body is typed at the call site instead of being cast afterwards:
 
-```javascript
+```typescript
 const response = await request.get<User>('/api/users/42');
 const user = await response.json(); // typed as User
 ```

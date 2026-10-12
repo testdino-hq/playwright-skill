@@ -1030,6 +1030,7 @@ await context.credentials.create(credential.rpId, { ...credential, signCount: 10
 ```
 
 **Tips:**
+- Alternative to Pattern B: `context.storageState({ path, credentials: true })` saves passkeys alongside cookies; restoring that state auto-installs the virtual authenticator.
 - Treat saved passkey JSON like a saved `storageState` — it contains a private key, so keep it out of version control (`.gitignore` the `.auth/` directory).
 - Combine with a setup project (see Recipe 1) so passkey enrollment happens once per run, not per test.
 - Test the fallback path too: what happens when the user cancels the ceremony or has no passkey.

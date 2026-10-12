@@ -17,7 +17,7 @@ globalTeardown      →  runs ONCE after all tests in all projects
 ```
 
 **Key distinction:**
-- `globalSetup` / `globalTeardown`: No browser, no Playwright fixtures. Pure Node.js.
+- `globalSetup` / `globalTeardown`: No browser provided (you must launch one yourself), no Playwright fixtures, no trace/report integration.
 - Setup projects with `dependencies`: Has full browser context, can use `page`, `request`, etc.
 
 ## Patterns
@@ -288,7 +288,7 @@ The same property is available to reporters in `onBegin(config)`.
 **Use when**: Authentication requires browser interaction (form login, OAuth redirect, MFA).
 **Avoid when**: Auth can be done via API call (use Pattern 3 instead).
 
-**Important**: `globalSetup` has no browser. For browser-based auth, use a **setup project** instead.
+**Important**: `globalSetup` gets no browser or fixtures. For browser-based auth, use a **setup project** instead.
 
 ```ts
 // playwright.config.ts
@@ -374,8 +374,7 @@ async function globalSetup(config: FullConfig) {
     }),
   });
 
-  // Return a cleanup function (Playwright calls globalTeardown separately)
-  // For cleanup, use globalTeardown
+  // Cleanup goes in globalTeardown below; alternatively, return an async function here and Playwright runs it as teardown
 }
 
 export default globalSetup;

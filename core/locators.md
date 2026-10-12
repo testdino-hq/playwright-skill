@@ -14,7 +14,7 @@ page.getByPlaceholder('Search...')                    // 4. Placeholder
 page.getByAltText('Company logo')                    // 5. Alt text (images)
 page.getByTitle('Close dialog')                      // 6. Title attribute
 page.getByTestId('checkout-summary')                 // 7. Test ID (last semantic option)
-page.locator('css=.legacy-widget >> internal:role=button') // 8. CSS/XPath (last resort)
+page.locator('.legacy-widget button')                // 8. CSS/XPath (last resort)
 ```
 
 ## Recent Locator Helpers (Playwright 1.59+)
@@ -421,8 +421,8 @@ test('legacy app with no semantic markup', async ({ page }) => {
   // XPath — only when CSS cannot express the query (e.g., text + ancestor traversal)
   await page.locator('xpath=//td[contains(text(),"Overdue")]/ancestor::tr//button').click();
 
-  // Combine CSS with Playwright pseudo-selectors for resilience
-  await page.locator('.sidebar >> role=button[name="Expand"]').click();
+  // Scope a CSS container, then chain a semantic locator (preferred over `>>` selector chaining)
+  await page.locator('.sidebar').getByRole('button', { name: 'Expand' }).click();
 });
 ```
 
@@ -435,7 +435,7 @@ test('legacy app with no semantic markup', async ({ page }) => {
 
   await page.locator('table.report-grid td:has-text("Overdue")').first().click();
   await page.locator('xpath=//td[contains(text(),"Overdue")]/ancestor::tr//button').click();
-  await page.locator('.sidebar >> role=button[name="Expand"]').click();
+  await page.locator('.sidebar').getByRole('button', { name: 'Expand' }).click();
 });
 ```
 
@@ -599,8 +599,8 @@ test('interact with Shadow DOM elements', async ({ page }) => {
     .getByRole('link', { name: 'Profile' })
     .click();
 
-  // If you explicitly need non-piercing behavior (rare), use css=light/
-  // await page.locator('css:light=.outer-only').click();
+  // `css:light=` (non-piercing) is undocumented and listed as removed in the 1.58 notes, though 1.64
+  // still parses it; prefer scoping from a light-DOM parent
 });
 ```
 
@@ -725,7 +725,7 @@ test('handle dynamic content without manual waits', async ({ page }) => {
 | `page.getByText('Aceptar')` hardcoded i18n text | Fails when locale changes | `page.getByRole('button', { name: /accept/i })` or `getByTestId('confirm-btn')` |
 | `await page.waitForTimeout(3000)` | Arbitrary delay; too slow in fast environments, too short in slow ones | `await expect(locator).toBeVisible()` |
 | `page.locator('.card').locator('.card-title').locator('a')` | Deep CSS chaining breaks on any structural change | `page.getByRole('link', { name: 'Card title text' })` |
-| `page.$('selector')` (ElementHandle API) | Returns a snapshot, not auto-waiting; deprecated pattern | `page.locator('selector')` — locators are lazy and auto-wait |
+| `page.$('selector')` (ElementHandle API) | Returns a snapshot, not auto-waiting; discouraged pattern | `page.locator('selector')` — locators are lazy and auto-wait |
 | `page.locator('text=Click here')` | Legacy text selector syntax | `page.getByText('Click here')` or `getByRole` with name |
 | Multiple locators for one element in sequence | Each `locator()` call in a chain restarts the search | Store as variable: `const btn = page.getByRole('button', { name: 'Save' })` |
 

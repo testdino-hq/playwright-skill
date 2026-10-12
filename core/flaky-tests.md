@@ -29,8 +29,9 @@ npx playwright test --shuffle
 # Reproduce a failing order with the seed printed at the start of the run
 npx playwright test --shuffle 271828182
 
-# Run all retries at the end in one worker to rule out concurrency (1.62+)
-npx playwright test --retries=2 --retry-strategy=isolated
+# Run all retries at the end in one worker to rule out concurrency (1.62+):
+# config-only, set retryStrategy: 'isolated' in playwright.config (no CLI flag)
+npx playwright test --retries=2
 
 # List flaky tests (tests that failed then passed on retry)
 npx playwright test --retries=2 --reporter=json | jq '.suites[].specs[] | select(.ok == true and (.tests[].results | length > 1))'
@@ -270,6 +271,8 @@ test('good: retry entire assertion block', async ({ page }) => {
 **Use when**: The test passes when run alone (`--grep "test name"`) but fails when run with other tests, or fails only in parallel mode.
 
 Isolation issues come from shared state: module-level variables, database rows, localStorage, cookies, or file system artifacts.
+
+When the shared state cannot be made per-test (one external account, a global setting), declare a test `lock` (1.63+) so only the tests that contend for it serialize. See [Serializing Tests on a Shared Resource](../ci/parallel-and-sharding.md#pattern-6-serializing-tests-on-a-shared-resource-lock-playwright-163).
 
 **TypeScript**
 ```typescript
@@ -742,7 +745,7 @@ Driving this from an external flakiness API, matching on full title paths, and t
 
 #### Isolated Retries (`retryStrategy: 'isolated'`, Playwright 1.62+)
 
-The default retry runs immediately in the same worker, inheriting whatever state may have caused the failure. `'isolated'` defers every retry to the end of the run and executes them in a single worker.
+The default `'immediate'` strategy retries as soon as a worker is free, while the rest of the suite is still running and can interfere again. `'isolated'` defers every retry to the end of the run and executes them in a single worker.
 
 ```typescript
 // playwright.config.ts

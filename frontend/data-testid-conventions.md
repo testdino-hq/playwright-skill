@@ -170,7 +170,7 @@ await row.getByRole('button', { name: 'Delete' }).click();
 
 **Agreement to make with your test team:** pick **one** attribute name (`data-testid` is the default and recommended) and use it everywhere. Mixing `data-test`, `data-qa`, and `data-testid` defeats `getByTestId` and forces brittle CSS.
 
-> **Production stripping (optional):** if you don't want test IDs shipped to production, strip them at build time with a Babel/SWC plugin (e.g. `babel-plugin-react-remove-properties` with `{ properties: ['data-testid'] }`) — but **keep them in every environment your tests/agents run against** (dev, CI, staging). Stripping in the environment under test removes the locators you just built. See [examples.md](examples.md#production-stripping).
+> **Production stripping (optional):** if you don't want test IDs shipped to production, strip them at build time with a Babel/SWC plugin (e.g. `babel-plugin-react-remove-properties` with `{ properties: ['data-testid'] }`) — but **keep them in every environment your tests/agents run against** (dev, CI, staging). Stripping in the environment under test removes the locators you just built. See [examples.md](examples.md#production-stripping-optional).
 
 ---
 
