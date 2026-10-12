@@ -11,7 +11,7 @@ metadata:
 
 > Opinionated, production-tested Playwright guidance — every pattern includes when (and when *not*) to use it.
 
-**73 reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more.
+**75 reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more.
 
 **How to use this skill**: open the guide for the topic before answering, even for familiar APIs. Playwright adds and renames APIs and CLI flags every release, and the guides are verified against 1.64. Guides tag newer APIs with the release that added them, e.g. `(1.62+)`; check the project's version (`npx playwright --version`) before using one.
 
@@ -84,6 +84,15 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 | CRUD flows | [crud-testing.md](core/crud-testing.md) | |
 | Drag and drop | [drag-and-drop.md](core/drag-and-drop.md) | |
 | Search & filter UI | [search-and-filter.md](core/search-and-filter.md) | |
+
+### Authoring Locatable Markup (Frontend)
+
+> For **frontend engineers writing the app** — make components reliably locatable by tests and AI agents.
+
+| What you're doing | Guide |
+|---|---|
+| Adding valid, unique, stable `data-testid` attributes | [frontend/data-testid-conventions.md](frontend/data-testid-conventions.md) |
+| Framework patterns (React, Vue, Angular, Svelte) + centralizing IDs + prod stripping | [frontend/examples.md](frontend/examples.md) |
 
 ### Debugging & Fixing
 
