@@ -859,7 +859,8 @@ npx playwright test       # never node tests/example.spec.ts
 ```
 
 ```typescript
-// TypeScript — BAD: test() after an await inside an async describe
+// TypeScript — BAD: test() after an await inside an async describe. If the awaited promise is
+// already resolved there's no error, but the test silently lands outside the describe.
 test.describe('suite', async () => { await setup(); test('a', async () => {}); });
 // GOOD
 test.describe('suite', () => { test('a', async () => {}); });

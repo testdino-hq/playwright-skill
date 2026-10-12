@@ -112,13 +112,18 @@ async function resolve(storyId: string) {
 
 const rootEl = document.getElementById('root')!;
 let root: Root | undefined;
+let renderError: unknown;
 
 (window as any).mount = async ({ story, props }: { story: string, props?: Record<string, any> }) => {
   const Story = await resolve(story);
   if (!Story)
     throw new Error(`Unknown story: ${story}`);
-  root ??= createRoot(rootEl);                       // reuse the root so update() keeps state
-  flushSync(() => root!.render(<Story {...props} />)); // a render error rejects mount()
+  // React 19 reports render errors instead of throwing; capture them so mount() rejects.
+  root ??= createRoot(rootEl, { onUncaughtError: error => { renderError = error; } });
+  renderError = undefined;
+  flushSync(() => root!.render(<Story {...props} />)); // reuse the root so update() keeps state
+  if (renderError)
+    throw renderError;
 };
 
 (window as any).unmount = async () => {
@@ -227,7 +232,7 @@ export const WithTitle = defineComponent(
 );
 ```
 
-Keep callbacks out of props: functions cannot cross from the test to the browser. Pattern 5 handles them.
+Keep callbacks out of props. The documented contract is plain, serializable props; 1.64 happens to expose functions passed this way, but the call then runs in Node.js, outside the story, and the scenario is no longer visible in the gallery. Pattern 5 handles callbacks.
 
 ### 5. Events and Callbacks: Record State in the Story
 
@@ -435,7 +440,7 @@ Migrate incrementally while still pinned to 1.62: add the gallery and `component
 | Don't | Problem | Do instead |
 |---|---|---|
 | `mount(<Component />)` with JSX on 1.63+ | The experimental packages are gone; it doesn't type-check or run | A story plus `mount('path/Story')` |
-| Pass callbacks or class instances as props | Props must be serializable; functions don't cross to the browser | Pattern 5: the story owns callbacks and records state |
+| Pass callbacks or class instances as props | Outside the documented serializable-props contract; the behavior lives in Node.js instead of the story | Pattern 5: the story owns callbacks and records state |
 | `component.click()` on the returned locator | It's the `#root` container, not your component | `component.getByRole('button').click()` |
 | `page.route()` after `mount()` | Mounting navigates; the first requests already went out | Route first, then mount |
 | Build providers into the gallery | Hides dependencies; stories can't opt out | Decorators in story files (Pattern 7) |
@@ -448,7 +453,9 @@ Migrate incrementally while still pinned to 1.62: add the gallery and `component
 | Symptom | Cause | Fix |
 |---|---|---|
 | `mount()` throws `Unknown story: ...` | Id doesn't match the file path + export, or the glob doesn't cover the file | Check the id grammar (Pattern 2) and the gallery's `import.meta.glob` |
-| `mount()` times out or `window.mount is not a function` | `baseURL` doesn't point at the gallery page, or the dev server isn't running | Set `baseURL` and `webServer.url` to `.../playwright/gallery/index.html` |
+| `The gallery page does not define window.mount().` | `baseURL` points at a page that isn't the gallery, or the gallery script failed to load | Set `baseURL` and `webServer.url` to `.../playwright/gallery/index.html`; check the gallery's console errors |
+| ``mount() requires `baseURL` to point at the component gallery.`` | No `baseURL` in the project's `use` | Add `baseURL` for the components project (Pattern 1) |
+| `mount()` succeeds but `#root` is empty, then a locator times out | A render error the gallery swallowed (React 19 reports instead of throwing) | Capture it with `onUncaughtError` and rethrow, as the Pattern 1 gallery does |
 | Component renders unstyled | Global CSS not imported in the gallery entry | Import it in `playwright/gallery/main.*` like the app entry does |
 | `update()` resets component state | The gallery recreates the root or app on each call | Reuse the root (React) or mount a reactive host once (Vue) |
 | Vue story ignores props passed from the test | Props not declared at runtime | Add `{ props: [...] }` to `defineComponent` (Pattern 4) |
