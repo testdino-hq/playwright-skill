@@ -39,9 +39,9 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Playwright](https://img.shields.io/badge/Playwright-1.64%2B-2EAD33.svg)](https://playwright.dev)
-[![Guides](https://img.shields.io/badge/guides-72-blue.svg)](SKILL.md)
+[![Guides](https://img.shields.io/badge/guides-74-blue.svg)](SKILL.md)
 
-Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **72 guides** with TypeScript and JavaScript examples throughout.
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **74 guides** with TypeScript and JavaScript examples throughout.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
@@ -61,6 +61,7 @@ Or add individual packs:
 
 ```bash
 npx skills add testdino-hq/playwright-skill/core
+npx skills add testdino-hq/playwright-skill/frontend
 npx skills add testdino-hq/playwright-skill/ci
 npx skills add testdino-hq/playwright-skill/pom
 npx skills add testdino-hq/playwright-skill/migration
@@ -75,6 +76,7 @@ npx skills add testdino-hq/playwright-skill/playwright-cli
 | Pack | Guides | What's covered |
 |---|:---:|---|
 | **core** | 49 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, trace-report analysis, framework recipes, architecture decisions |
+| **frontend** | 2 | For frontend engineers: adding valid, unique, stable `data-testid` attributes (naming, list uniqueness, stability) + React/Vue/Angular/Svelte patterns |
 | **ci** | 9 | GitHub Actions, GitLab CI, CircleCI, Azure DevOps, Jenkins, Docker, sharding, reporting, coverage |
 | **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
@@ -169,6 +171,15 @@ The foundation: writing, debugging, and maintaining reliable tests. New to Playw
 | [webmcp-testing.md](core/webmcp-testing.md) | Testing agent tools a page exposes via WebMCP (1.64+) |
 | [third-party-integrations.md](core/third-party-integrations.md) | Testing against third-party services |
 | [i18n-and-localization.md](core/i18n-and-localization.md) | Multi-language, RTL, locale testing |
+
+## Frontend Skills
+
+For **frontend engineers writing the app** — make components reliably locatable by tests and AI agents (the authoring counterpart to the test-author guides above).
+
+| Guide | Description |
+|---|---|
+| [data-testid-conventions.md](frontend/data-testid-conventions.md) | When to add `data-testid`, naming convention, uniqueness in lists, stability rules, `testIdAttribute` config |
+| [examples.md](frontend/examples.md) | React/JSX, Vue, Angular, Svelte patterns; centralizing IDs; optional production stripping |
 
 ## CI/CD Skills
 
