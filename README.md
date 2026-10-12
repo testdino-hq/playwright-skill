@@ -39,9 +39,9 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Playwright](https://img.shields.io/badge/Playwright-1.64%2B-2EAD33.svg)](https://playwright.dev)
-[![Guides](https://img.shields.io/badge/guides-75-blue.svg)](SKILL.md)
+[![Guides](https://img.shields.io/badge/guides-79-blue.svg)](SKILL.md)
 
-Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **75 guides** with TypeScript examples throughout and JavaScript in most core guides.
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **79 guides** with TypeScript examples throughout and JavaScript in most core guides.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
@@ -62,6 +62,7 @@ Or add individual packs:
 ```bash
 npx skills add testdino-hq/playwright-skill/core
 npx skills add testdino-hq/playwright-skill/frontend
+npx skills add testdino-hq/playwright-skill/qa
 npx skills add testdino-hq/playwright-skill/ci
 npx skills add testdino-hq/playwright-skill/pom
 npx skills add testdino-hq/playwright-skill/migration
@@ -76,6 +77,7 @@ npx skills add testdino-hq/playwright-skill/playwright-cli
 | Pack | Guides | What's covered |
 |---|:---:|---|
 | **core** | 50 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, trace-report analysis, framework recipes, architecture decisions |
+| **qa** | 4 | For QA engineers: test case design from requirements, bug reports from failing tests, manual-to-automated conversion, test review |
 | **frontend** | 2 | For frontend engineers: adding valid, unique, stable `data-testid` attributes (naming, list uniqueness, stability) + React/Vue/Angular/Svelte patterns |
 | **ci** | 9 | GitHub Actions, GitLab CI, CircleCI, Azure DevOps, Jenkins, Docker, sharding, reporting, coverage |
 | **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
@@ -173,6 +175,17 @@ The foundation: writing, debugging, and maintaining reliable tests. New to Playw
 | [webmcp-testing.md](core/webmcp-testing.md) | Testing agent tools a page exposes via WebMCP (1.64+) |
 | [third-party-integrations.md](core/third-party-integrations.md) | Testing against third-party services |
 | [i18n-and-localization.md](core/i18n-and-localization.md) | Multi-language, RTL, locale testing |
+
+## QA Skills
+
+For **QA engineers**: the work around the test code.
+
+| Guide | Description |
+|---|---|
+| [test-design.md](qa/test-design.md) | Requirements to test cases: boundaries, partitions, state transitions, risk ranking, generator-ready plans |
+| [bug-reports.md](qa/bug-reports.md) | Classify a failure, write a reproducible bug report, keep the test with `test.fail()` |
+| [manual-to-automated.md](qa/manual-to-automated.md) | Triage and convert manual cases to Playwright specs with case-ID traceability |
+| [test-review.md](qa/test-review.md) | Review checklist by severity, prove a test can fail, `eslint-plugin-playwright` |
 
 ## Frontend Skills
 
