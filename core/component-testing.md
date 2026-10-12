@@ -6,24 +6,16 @@
 ## Quick Reference
 
 ```typescript
-// Install for your framework:
-// npm init playwright@latest -- --ct          (interactive)
-// npm install -D @playwright/experimental-ct-react
-// npm install -D @playwright/experimental-ct-vue
-// npm install -D @playwright/experimental-ct-svelte
+// Playwright 1.62+: no extra package. A story file exports one scenario per named export:
+// src/components/Button.story.tsx
+export const Primary = () => <Button title="Submit" />;
 
-// Mount a component, interact, assert:
-import { test, expect } from '@playwright/experimental-ct-react';
-import { Button } from './Button';
+// The test mounts a story by id from a gallery page your dev server serves (baseURL points at it):
+import { test, expect } from '@playwright/test';
 
-test('button renders and responds to click', async ({ mount }) => {
-  let clicked = false;
-  const component = await mount(
-    <Button label="Save" onClick={() => { clicked = true; }} />
-  );
-  await expect(component).toContainText('Save');
-  await component.click();
-  expect(clicked).toBe(true);
+test('renders primary button', async ({ mount }) => {
+  const component = await mount('components/Button/Primary');
+  await expect(component.getByRole('button')).toHaveText('Submit');
 });
 ```
 
@@ -37,7 +29,7 @@ The experimental packages are no longer updated:
 - `@playwright/experimental-ct-react17`
 - `@playwright/experimental-ct-vue`
 
-Existing suites on these packages keep running on a pinned Playwright version, but they will not receive fixes. New component suites should start on the stories model.
+They are not published for Playwright 1.63+ (`@playwright/experimental-ct-svelte` was removed in 1.59): existing suites must stay pinned to 1.62 until migrated (see the upstream [migration guide](https://playwright.dev/docs/test-components#migration-from-the-experimental-packages)). New component suites should start on the stories model.
 
 The patterns in the rest of this guide were written against the experimental `mount()` API. The testing concepts still hold — what to assert, when a component test beats an E2E test, how to handle providers and slots — but the mounting calls need translating to stories. Check the [official component testing docs](https://playwright.dev/docs/test-components) for the current `mount()` signature before copying a snippet verbatim.
 
@@ -1174,7 +1166,7 @@ test('complete checkout flow', async ({ page }) => {
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `Cannot find module '@playwright/experimental-ct-react'` | Package not installed | `npm install -D @playwright/experimental-ct-react` (or `-vue`, `-svelte`) |
+| `Cannot find module '@playwright/experimental-ct-react'` | Package not installed | `npm install -D @playwright/experimental-ct-react` (or `-vue`), pinned to Playwright 1.62; or migrate to the stories model |
 | Component renders blank | Missing CSS imports or provider wrappers | Add global styles to `playwright/index.ts` and wrap with required providers |
 | `Error: No tests found` | Test file does not match `testMatch` pattern in `playwright-ct.config.ts` | Ensure files use the configured suffix (e.g., `*.ct.tsx`) and `testDir` is correct |
 | `Cannot use JSX` in test file | TypeScript/Vite not configured for JSX | Ensure test files use `.ct.tsx`/`.ct.jsx` extension and `tsconfig.json` has `"jsx": "react-jsx"` |

@@ -10,9 +10,6 @@ Playwright 1.62 adds `reporter.preprocess()`, a hook that runs after collection 
 ## Quick Reference
 
 ```bash
-# Run all retries at the end in one worker (1.62+)
-npx playwright test --retries=2 --retry-strategy=isolated
-
 # Append a reporter instead of replacing the configured one (1.63+)
 npx playwright test --add-reporter json
 
@@ -108,7 +105,7 @@ class QuarantineReporter implements Reporter {
 
     for (const test of suite.allTests()) {
       if (flaky.has(test.title))
-        testRun.failing(test);   // runs, expected red, alerts if it goes green
+        testRun.fail(test);   // runs, expected red, alerts if it goes green
     }
   }
 }
@@ -171,7 +168,7 @@ test('checkout completes', { tag: '@critical' }, async ({ page }) => { /* ... */
 // Never quarantine a test the author marked critical, however flaky it looks
 for (const test of suite.allTests()) {
   if (flaky.has(test.title) && !test.tags.includes('@critical'))
-    testRun.failing(test);
+    testRun.fail(test);
 }
 ```
 
@@ -183,7 +180,7 @@ That guard matters. An auto-quarantine with no exemption list will eventually si
 |---|---|
 | Static subset, known before the run | `--grep` / `--grep-invert` with tags |
 | Subset depends on run history or an external service | `reporter.preprocess()` |
-| Test is broken and you want it to stop blocking merges | `testRun.failing()` — runs it, alerts when it recovers |
+| Test is broken and you want it to stop blocking merges | `testRun.fail()` — runs it, alerts when it recovers |
 | Test cannot run in this environment at all | `testRun.exclude()` |
 | Diagnosing whether flakiness is concurrency-related | `retryStrategy: 'isolated'` |
 | Tests contend over a shared resource | `lock` — see [ci/parallel-and-sharding.md](../ci/parallel-and-sharding.md) |

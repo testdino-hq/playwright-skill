@@ -39,9 +39,9 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Playwright](https://img.shields.io/badge/Playwright-1.64%2B-2EAD33.svg)](https://playwright.dev)
-[![Guides](https://img.shields.io/badge/guides-72-blue.svg)](SKILL.md)
+[![Guides](https://img.shields.io/badge/guides-73-blue.svg)](SKILL.md)
 
-Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **72 guides** with TypeScript and JavaScript examples throughout.
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **73 guides** with TypeScript examples throughout and JavaScript in most core guides.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
@@ -74,7 +74,7 @@ npx skills add testdino-hq/playwright-skill/playwright-cli
 
 | Pack | Guides | What's covered |
 |---|:---:|---|
-| **core** | 49 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, trace-report analysis, framework recipes, architecture decisions |
+| **core** | 50 | Locators, assertions, fixtures, auth, API testing, network mocking, visual regression, accessibility, debugging, trace-report analysis, framework recipes, architecture decisions |
 | **ci** | 9 | GitHub Actions, GitLab CI, CircleCI, Azure DevOps, Jenkins, Docker, sharding, reporting, coverage |
 | **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
@@ -119,7 +119,7 @@ The foundation: writing, debugging, and maintaining reliable tests. New to Playw
 | [error-and-edge-cases.md](core/error-and-edge-cases.md) | Error states and edge-case coverage |
 | [visual-regression.md](core/visual-regression.md) | Screenshot comparison, thresholds, masking dynamic content |
 | [accessibility.md](core/accessibility.md) | axe-core integration, ARIA assertions, a11y auditing |
-| [component-testing.md](core/component-testing.md) | Mount React/Vue/Svelte components in isolation |
+| [component-testing.md](core/component-testing.md) | Component tests with the stories-and-galleries `mount()` model (1.62+) |
 | [mobile-and-responsive.md](core/mobile-and-responsive.md) | Device emulation, viewport testing, touch interactions |
 
 ### Debugging & Fixing
@@ -127,9 +127,11 @@ The foundation: writing, debugging, and maintaining reliable tests. New to Playw
 | Guide | Description |
 |---|---|
 | [debugging.md](core/debugging.md) | Trace viewer, `PWDEBUG`, UI mode, headed + slow-mo |
+| [test-agents.md](core/test-agents.md) | Playwright Test Agents: plan, generate and heal tests with an AI tool; when to use playwright-cli or MCP instead |
 | [trace-analysis.md](core/trace-analysis.md) | Debug a `trace.zip` from the terminal with the `npx playwright trace` CLI — agent-native, decision trees, failure playbooks |
 | [error-index.md](core/error-index.md) | Common error messages and how to fix them |
 | [flaky-tests.md](core/flaky-tests.md) | Root causes, retry strategies, stabilization patterns |
+| [dynamic-test-selection.md](core/dynamic-test-selection.md) | Select or quarantine tests at runtime with `reporter.preprocess()` and an external flakiness API |
 | [common-pitfalls.md](core/common-pitfalls.md) | Top beginner mistakes and how to avoid them |
 
 ### Architecture Decisions
@@ -146,7 +148,7 @@ The foundation: writing, debugging, and maintaining reliable tests. New to Playw
 | Guide | Description |
 |---|---|
 | [nextjs.md](core/nextjs.md) | App Router + Pages Router testing |
-| [react.md](core/react.md) | CRA, Vite, component testing |
+| [react.md](core/react.md) | Vite and React app testing |
 | [vue.md](core/vue.md) | Vue 3 / Nuxt testing |
 | [angular.md](core/angular.md) | Angular testing patterns |
 

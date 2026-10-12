@@ -460,6 +460,16 @@ const html = await page.content({ includeShadow: true });
 
 Useful for attaching a full HTML snapshot to a failing test, or feeding a component's rendered markup to an HTML validator.
 
+### Locating Across Frames Without a Selector (Playwright 1.63+)
+
+`page.frameLocator()` called with no selector searches the main frame and every iframe, so you do not need to know which iframe hosts the element:
+
+```typescript
+await page.frameLocator().getByRole('button', { name: 'Pay now' }).click();
+```
+
+The rest of the locator still resolves inside a single frame, and it throws if the match spans several frames. Prefer an explicit `frameLocator('iframe[title="..."]')` when the page has multiple similar iframes.
+
 ## Decision Guide
 
 | Scenario | Approach | Why |
@@ -472,7 +482,7 @@ Useful for attaching a full HTML snapshot to a failing test, or feeding a compon
 | Open Shadow DOM | Standard locators -- no changes needed | Playwright pierces open shadow roots by default |
 | Closed Shadow DOM | `addInitScript` to override `attachShadow` | Forces closed roots to open before page loads |
 | Slotted content in Web Components | Locate within the custom element tag | Slotted content is light DOM, accessible normally |
-| Non-piercing CSS (rare) | `css:light=selector` | Explicitly restricts to light DOM only |
+| Non-piercing CSS (rare) | No built-in engine: the `:light` suffix was removed in 1.58 | Scope from a light-DOM parent or check in `evaluate()` |
 
 ## Anti-Patterns
 

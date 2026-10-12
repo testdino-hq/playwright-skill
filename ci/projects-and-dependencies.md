@@ -5,7 +5,7 @@
 ## Quick Reference
 
 ```bash
-# Run all projects
+# Run all projects (except ones marked default: false)
 npx playwright test
 
 # Run a specific project

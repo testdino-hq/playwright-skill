@@ -150,6 +150,27 @@ test('swap to a different authenticated state without recreating the context', a
 });
 ```
 
+### Saving IndexedDB and OPFS Auth State
+
+`storageState()` saves cookies and local storage by default. If your app keeps auth tokens elsewhere, opt in when saving: `indexedDB: true` (Firebase Authentication and similar, 1.51+) or `opfs: true` for the origin private file system (1.63+).
+
+```typescript
+await page.context().storageState({ path: '.auth/user.json', indexedDB: true, opfs: true });
+```
+
+### HTTP Basic Auth Across Origins (Playwright 1.63+)
+
+`httpCredentials` accepts an array. The first entry whose `origin` matches the request is used; an entry without `origin` matches any request.
+
+```typescript
+use: {
+  httpCredentials: [
+    { username: 'app', password: process.env.APP_PASS!, origin: 'https://app.staging.example.com' },
+    { username: 'api', password: process.env.API_PASS!, origin: 'https://api.staging.example.com' },
+  ],
+},
+```
+
 ### Global Setup Authentication
 
 **Use when**: You want to authenticate once before the entire test suite runs, then reuse that session everywhere. The standard Playwright-recommended approach.
