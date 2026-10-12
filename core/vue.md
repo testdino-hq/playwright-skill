@@ -252,7 +252,7 @@ module.exports = defineConfig({
 
 ### Component Testing with `@playwright/experimental-ct-vue`
 
-> **Deprecated package**: `@playwright/experimental-ct-vue` is not published for Playwright 1.63+. Playwright 1.62 moved component testing to stories mounted from `@playwright/test`. Use this pattern only on a suite pinned to 1.62; see [component-testing.md](component-testing.md#playwright-162-changed-the-component-testing-model) for the current model.
+> **Deprecated package**: `@playwright/experimental-ct-vue` is not published for Playwright 1.63+. Playwright 1.62 moved component testing to stories mounted from `@playwright/test`. Use this pattern only on a suite pinned to 1.62; see [component-testing.md](component-testing.md#how-component-testing-works-162) for the current model.
 
 **Use when**: Testing complex interactive Vue components in isolation -- data tables, form components, custom select dropdowns, rich editors. The component needs a real browser but not a full application.
 **Avoid when**: The component depends heavily on Pinia stores, Vue Router, or backend data. Use E2E tests instead, or provide the dependencies in your component test setup.

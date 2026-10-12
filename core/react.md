@@ -171,7 +171,7 @@ module.exports = defineConfig({
 
 ### Component Testing with `@playwright/experimental-ct-react`
 
-> **Deprecated package**: `@playwright/experimental-ct-react` is not published for Playwright 1.63+. Playwright 1.62 moved component testing to stories mounted from `@playwright/test`. Use this pattern only on a suite pinned to 1.62; see [component-testing.md](component-testing.md#playwright-162-changed-the-component-testing-model) for the current model.
+> **Deprecated package**: `@playwright/experimental-ct-react` is not published for Playwright 1.63+. Playwright 1.62 moved component testing to stories mounted from `@playwright/test`. Use this pattern only on a suite pinned to 1.62; see [component-testing.md](component-testing.md#how-component-testing-works-162) for the current model.
 
 **Use when**: Testing complex interactive components in isolation -- data tables, form wizards, rich text editors, dropdowns with keyboard navigation. The component needs a real browser (not jsdom) but not a full application.
 **Avoid when**: The component behavior depends heavily on backend data or routing context. Use E2E tests instead.
