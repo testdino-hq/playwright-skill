@@ -14,7 +14,7 @@ WebMCP lets a page expose JavaScript functions as agent tools (`search_catalog`,
 ## Quick Reference
 
 ```typescript
-// WebMCP is experimental in Chromium: enable the feature flag
+// WebMCP is experimental: enable it at launch (Chromium flag shown; Firefox uses prefs, see Pattern 1)
 const browser = await chromium.launch({ args: ['--enable-features=WebMCP'] });
 const page = await browser.newPage();
 await page.goto('/');
@@ -44,7 +44,7 @@ playwright-cli webmcp-call search_catalog --params '{"query":"cats"}'
 **Use when**: More than one spec touches WebMCP tools.
 **Avoid when**: You only have a single exploratory test; launching with `args` inline is fine there.
 
-WebMCP sits behind a Chromium feature flag. Put the flag on a dedicated project so the rest of the suite runs on stock browsers and the WebMCP specs are clearly scoped.
+WebMCP sits behind a browser flag. Put the flag on a dedicated project so the rest of the suite runs on stock browsers and the WebMCP specs are clearly scoped.
 
 ```typescript
 // playwright.config.ts
@@ -61,11 +61,24 @@ export default defineConfig({
         launchOptions: { args: ['--enable-features=WebMCP'] },
       },
     },
+    {
+      name: 'webmcp-firefox',
+      testMatch: /.*\.webmcp\.spec\.ts/,
+      use: {
+        ...devices['Desktop Firefox'],
+        launchOptions: {
+          firefoxUserPrefs: {
+            'dom.modelcontext.enabled': true,
+            'dom.modelcontext.testing.enabled': true,
+          },
+        },
+      },
+    },
   ],
 });
 ```
 
-Only Chromium implements the experimental API today, so do not add Firefox or WebKit variants of this project.
+Chromium enables WebMCP with `--enable-features=WebMCP` and Firefox with the `dom.modelcontext.enabled` and `dom.modelcontext.testing.enabled` prefs. WebKit does not implement it, so do not add a WebKit variant of this project.
 
 ### Pattern 2: Lock Down the Tool Contract
 
@@ -137,6 +150,12 @@ test('search_catalog rejects an empty query with a useful message', async ({ pag
 
 An error message is part of the contract: an agent reads it to decide how to retry. Assert that it says what was wrong.
 
+`callTool()` returns an `isError: true` result as is, but **throws** when the tool is not registered or its `execute` function throws. Assert on the rejection for tools that throw on bad input:
+
+```typescript
+await expect(page.webmcp.callTool('search_catalog', { query: 42 })).rejects.toThrow(/query/i);
+```
+
 ### Pattern 5: Tools Registered by Authenticated Pages
 
 **Use when**: Tools only appear after login (account actions, order history).
@@ -177,6 +196,8 @@ playwright-cli webmcp-call search_catalog --params '{"query":"cats"}'
 
 [Playwright MCP](https://playwright.dev/docs/getting-started-mcp) offers page-defined tools to the agent automatically as `webmcp_<tool>`. Pass `--no-webmcp` to opt out, for example when you want an agent to drive the UI the way a human would instead of taking the shortcut.
 
+Tool names, descriptions, input schemas and results come from the page, so treat them as untrusted input, especially when an agent explores a page you do not control. See the Security Trust Boundary in [SKILL.md](SKILL.md).
+
 ## Decision Guide
 
 | Situation | Approach |
@@ -186,7 +207,8 @@ playwright-cli webmcp-call search_catalog --params '{"query":"cats"}'
 | Tools live in an iframe | `frame.webmcp` on the right `Frame` |
 | Quick manual exploration | `playwright-cli webmcp-list` / `webmcp-call` |
 | Agent should use the UI, not tools | Playwright MCP with `--no-webmcp` |
-| Firefox / WebKit coverage | Not available: WebMCP is a Chromium experiment |
+| Firefox coverage | `firefoxUserPrefs` with `dom.modelcontext.enabled` and `dom.modelcontext.testing.enabled` |
+| WebKit coverage | Not available: WebKit does not implement WebMCP |
 
 ## Anti-Patterns
 
@@ -201,8 +223,9 @@ playwright-cli webmcp-call search_catalog --params '{"query":"cats"}'
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `tools()` returns `[]` | Feature flag missing, or page registers tools after load | Launch with `--enable-features=WebMCP`; wait for the app's ready signal before listing |
-| Tool missing only in CI | CI uses a different browser channel without the flag | Use the bundled Chromium or pass the flag in the CI project |
+| `tools()` throws | Browser launched without WebMCP support | Chromium: `--enable-features=WebMCP`; Firefox: the `dom.modelcontext.*` prefs (Pattern 1) |
+| `tools()` returns `[]` | Page registers tools after load, or in a child frame | Wait for the app's ready signal before listing; use `frame.webmcp` for iframes |
+| `tools()` throws only in CI | CI project or browser channel launches without the flag | Use the bundled browser and pass the flag or prefs in the CI project |
 | Tool found in page, not in frame | Tool registered inside an iframe | Use `frame.webmcp` on that frame |
 
 ## Related

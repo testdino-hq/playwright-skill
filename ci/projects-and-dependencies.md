@@ -80,7 +80,7 @@ jobs:
 **Use when**: You want Firefox and WebKit configured in one place, but a plain `npx playwright test` on a laptop should run only Chromium.
 **Avoid when**: Every run, local and CI, should cover every browser; leave `default` unset.
 
-**Before 1.64** the choices were to run every browser on every local run (slow), comment projects in and out, or gate them on `process.env.CI` (config logic that drifts). **1.64** adds `default: false`: the project stays in the config and is selectable by name, but does not run unless asked for.
+**Before 1.64** the choices were to run every browser on every local run (slow), comment projects in and out, or gate them on `process.env.CI` (config logic that drifts). **1.64** adds `default: false`: the project stays in the config and is selectable by name, but does not run unless asked for. One exception: a `default: false` project still runs when a running project lists it in `dependencies` or `teardown`, so marking a setup project `default: false` does not skip it.
 
 ```typescript
 import { defineConfig, devices } from '@playwright/test';
