@@ -599,7 +599,8 @@ test('interact with Shadow DOM elements', async ({ page }) => {
     .getByRole('link', { name: 'Profile' })
     .click();
 
-  // There is no non-piercing CSS engine: the `:light` suffix was removed in 1.58
+  // `css:light=` (non-piercing) is undocumented and listed as removed in the 1.58 notes, though 1.64
+  // still parses it; prefer scoping from a light-DOM parent
 });
 ```
 

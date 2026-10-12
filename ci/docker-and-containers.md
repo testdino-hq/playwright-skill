@@ -237,6 +237,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.64.0-noble
+      options: --ipc=host
     steps:
       - uses: actions/checkout@v7
       - run: npm ci
@@ -288,11 +289,6 @@ pipeline {
 {
   "name": "Playwright Dev",
   "image": "mcr.microsoft.com/playwright:v1.64.0-noble",
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20"
-    }
-  },
   "postCreateCommand": "npm ci",
   "customizations": {
     "vscode": {
