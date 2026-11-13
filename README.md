@@ -67,10 +67,10 @@ npx skills add testdino-hq/playwright-skill/ci
 npx skills add testdino-hq/playwright-skill/pom
 npx skills add testdino-hq/playwright-skill/migration
 npx skills add testdino-hq/playwright-skill/playwright-cli
-npx skills add testdino-hq/playwright-skill/e2e
+npx skills add testdino-hq/playwright-skill/e2e-testdino
 ```
 
-The `e2e` pack's skill is named `e2e-testdino`, not `e2e`, so it does not collide with the `e2e` skill that e2e installs itself.
+The pack is named `e2e-testdino` (folder and skill), not `e2e`, so it does not collide with the `e2e` skill that e2e installs itself.
 
 > 🎬 Watch the installation guide
 [![Watch the installation guide](https://img.youtube.com/vi/8dRCJZ_we0s/maxresdefault.jpg)](https://www.youtube.com/watch?v=8dRCJZ_we0s)
@@ -86,7 +86,7 @@ The `e2e` pack's skill is named `e2e-testdino`, not `e2e`, so it does not collid
 | **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
 | **migration** | 2 | Migrating from Cypress, migrating from Selenium |
-| **e2e** | 8 | For suites on e2e, the agentic runner: results and artifacts from CI, debugging a CI failure from its trace page, merged shards, flake verdicts and quarantine, agent cost and replay cache health, device recordings, explore findings, test case links |
+| **e2e-testdino** | 8 | For suites on e2e, the agentic runner: results and artifacts from CI, debugging a CI failure from its trace page, merged shards, flake verdicts and quarantine, agent cost and replay cache health, device recordings, explore findings, test case links |
 
 ## Golden Rules
 
@@ -220,14 +220,14 @@ For teams running [e2e](https://e2e.com), the agentic test runner, beside or ins
 
 | Guide | Description |
 |---|---|
-| [results-and-artifacts.md](e2e/results-and-artifacts.md) | Add the reporter, what uploads and when, the 50 MB and 40-second limits, tags, keeping media local |
-| [debugging-a-ci-failure.md](e2e/debugging-a-ci-failure.md) | Fetch the trace page and screen at failure of a CI run, find what changed, fix locally, verify the fix |
-| [sharding.md](e2e/sharding.md) | `--shard` across CI jobs as one run, split mode, what each shard still does alone |
-| [flaky-or-broken.md](e2e/flaky-or-broken.md) | Flake verdict before paying for reruns, quarantine through `testdino-e2e run`, re-run only failures |
-| [agent-cost-and-cache-health.md](e2e/agent-cost-and-cache-health.md) | Cost per test and stale recordings from `report.json`, a pull request against main, when to turn on `--strict-cache` |
-| [mobile-results.md](e2e/mobile-results.md) | Device recordings under the upload limits, hosted device links, one device's failures |
-| [explore-findings.md](e2e/explore-findings.md) | Turn verified explore and bug bash findings into uploaded repro runs, tickets and sessions |
-| [feature-map-to-test-cases.md](e2e/feature-map-to-test-cases.md) | Link e2e tests to test cases so the feature map's coverage is shared |
+| [results-and-artifacts.md](e2e-testdino/results-and-artifacts.md) | Add the reporter, what uploads and when, the 50 MB and 40-second limits, tags, keeping media local |
+| [debugging-a-ci-failure.md](e2e-testdino/debugging-a-ci-failure.md) | Fetch the trace page and screen at failure of a CI run, find what changed, fix locally, verify the fix |
+| [sharding.md](e2e-testdino/sharding.md) | `--shard` across CI jobs as one run, split mode, what each shard still does alone |
+| [flaky-or-broken.md](e2e-testdino/flaky-or-broken.md) | Flake verdict before paying for reruns, quarantine through `testdino-e2e run`, re-run only failures |
+| [agent-cost-and-cache-health.md](e2e-testdino/agent-cost-and-cache-health.md) | Cost per test and stale recordings from `report.json`, a pull request against main, when to turn on `--strict-cache` |
+| [mobile-results.md](e2e-testdino/mobile-results.md) | Device recordings under the upload limits, hosted device links, one device's failures |
+| [explore-findings.md](e2e-testdino/explore-findings.md) | Turn verified explore and bug bash findings into uploaded repro runs, tickets and sessions |
+| [feature-map-to-test-cases.md](e2e-testdino/feature-map-to-test-cases.md) | Link e2e tests to test cases so the feature map's coverage is shared |
 
 ## Playwright CLI Skills
 

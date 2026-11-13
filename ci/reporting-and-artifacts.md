@@ -604,4 +604,4 @@ The HTML report automatically embeds screenshots from `test-results/`. If you mo
 - [ci/parallel-and-sharding.md](parallel-and-sharding.md) -- blob reporter for sharded runs
 - [core/configuration.md](../core/configuration.md) -- trace, screenshot, video settings
 - [core/debugging.md](../core/debugging.md) -- using traces and screenshots for debugging
-- [e2e/results-and-artifacts.md](../e2e/results-and-artifacts.md) -- the same problem for suites on e2e, the agentic runner, which has its own reporters and output folder
+- [e2e-testdino/results-and-artifacts.md](../e2e-testdino/results-and-artifacts.md) -- the same problem for suites on e2e, the agentic runner, which has its own reporters and output folder
