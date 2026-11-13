@@ -156,18 +156,18 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 
 ### e2e With TestDino (the Agentic Runner, After the Run)
 
-> For projects that run **e2e** from e2e.com (`e2e.config.ts`, `*.e2e.ts`, `agent.act`), not Playwright Test. e2e ships its own skill for writing, running and fixing tests on one machine (`npx e2e guide <topic>`); use it for those. These guides start where it stops. Pack index: [e2e/SKILL.md](e2e/SKILL.md).
+> For projects that run **e2e** from e2e.com (`e2e.config.ts`, `*.e2e.ts`, `agent.act`), not Playwright Test. e2e ships its own skill for writing, running and fixing tests on one machine (`npx e2e guide <topic>`); use it for those. These guides start where it stops. Pack index: [e2e-testdino/SKILL.md](e2e-testdino/SKILL.md).
 
 | What you're doing | Guide |
 |---|---|
-| Send e2e results, videos and trace pages somewhere that outlives the CI job | [results-and-artifacts.md](e2e/results-and-artifacts.md) |
-| An e2e test failed in CI and its trace page is not on this machine | [debugging-a-ci-failure.md](e2e/debugging-a-ci-failure.md) |
-| `--shard` across CI jobs, one merged run | [sharding.md](e2e/sharding.md) |
-| Flaky or broken, quarantine, re-run only failures, verify a fix | [flaky-or-broken.md](e2e/flaky-or-broken.md) |
-| What agent steps cost; recordings that stopped replaying | [agent-cost-and-cache-health.md](e2e/agent-cost-and-cache-health.md) |
-| Recordings and screens from simulator, emulator and device runs | [mobile-results.md](e2e/mobile-results.md) |
-| Owners and tickets for `e2e explore` and bug bash findings | [explore-findings.md](e2e/explore-findings.md) |
-| Link e2e tests to test cases from the feature map | [feature-map-to-test-cases.md](e2e/feature-map-to-test-cases.md) |
+| Send e2e results, videos and trace pages somewhere that outlives the CI job | [results-and-artifacts.md](e2e-testdino/results-and-artifacts.md) |
+| An e2e test failed in CI and its trace page is not on this machine | [debugging-a-ci-failure.md](e2e-testdino/debugging-a-ci-failure.md) |
+| `--shard` across CI jobs, one merged run | [sharding.md](e2e-testdino/sharding.md) |
+| Flaky or broken, quarantine, re-run only failures, verify a fix | [flaky-or-broken.md](e2e-testdino/flaky-or-broken.md) |
+| What agent steps cost; recordings that stopped replaying | [agent-cost-and-cache-health.md](e2e-testdino/agent-cost-and-cache-health.md) |
+| Recordings and screens from simulator, emulator and device runs | [mobile-results.md](e2e-testdino/mobile-results.md) |
+| Owners and tickets for `e2e explore` and bug bash findings | [explore-findings.md](e2e-testdino/explore-findings.md) |
+| Link e2e tests to test cases from the feature map | [feature-map-to-test-cases.md](e2e-testdino/feature-map-to-test-cases.md) |
 
 ### Specialized Topics
 

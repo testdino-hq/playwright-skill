@@ -442,4 +442,4 @@ export default defineConfig({
 - [ci/reporting-and-artifacts.md](reporting-and-artifacts.md) -- blob reporter and merge-reports
 - [core/fixtures-and-hooks.md](../core/fixtures-and-hooks.md) -- worker-scoped fixtures
 - [core/test-organization.md](../core/test-organization.md) -- parallel vs serial execution
-- [e2e/sharding.md](../e2e/sharding.md) -- sharding a suite on e2e, the agentic runner, which has `--shard` but no `merge-reports`
+- [e2e-testdino/sharding.md](../e2e-testdino/sharding.md) -- sharding a suite on e2e, the agentic runner, which has `--shard` but no `merge-reports`
