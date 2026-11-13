@@ -1,17 +1,17 @@
 ---
 name: playwright-skill
-description: Current Playwright (1.64) patterns for writing, debugging, and scaling reliable test suites. Use for any Playwright task, even ones you think you know, because the guides cover APIs and CLI flags newer than most training data. Covers writing or fixing tests, locators, a failing or flaky test, a trace.zip or error message, playwright.config and projects, network mocking, auth, visual and accessibility testing, Docker and CI sharding, playwright-cli browser automation, Playwright Test Agents, page objects, migrating from Cypress or Selenium, and QA work: test case design, bug reports from failures, automating manual test cases, and reviewing tests. TypeScript and JavaScript.
+description: Current Playwright (1.64) patterns for writing, debugging, and scaling reliable test suites. Use for any Playwright task, even ones you think you know, because the guides cover APIs and CLI flags newer than most training data. Covers writing or fixing tests, locators, a failing or flaky test, a trace.zip or error message, playwright.config and projects, network mocking, auth, visual and accessibility testing, Docker and CI sharding, playwright-cli browser automation, Playwright Test Agents, page objects, migrating from Cypress or Selenium, and QA work: test case design, bug reports from failures, automating manual test cases, and reviewing tests. Also covers what happens after a run of e2e, the agentic test runner (`e2e.config.ts`, `*.e2e.ts`): a CI failure whose trace page is not on this machine, flaky-or-broken verdicts from history, quarantine, merged shards, and agent step cost. TypeScript and JavaScript.
 license: MIT
 metadata:
   author: testdino.com
-  version: "2.8.0"
+  version: "2.9.0"
 ---
 
 # Playwright Skill
 
 > Opinionated, production-tested Playwright guidance — every pattern includes when (and when *not*) to use it.
 
-**79 reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more.
+**87 reference guides**. 79 cover the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more. 8 cover results from [e2e](https://e2e.com), the agentic test runner, after a run has left the machine.
 
 **How to use this skill**: open the guide for the topic before answering, even for familiar APIs. Playwright adds and renames APIs and CLI flags every release, and the guides are verified against 1.64. Guides tag newer APIs with the release that added them, e.g. `(1.62+)`; check the project's version (`npx playwright --version`) before using one.
 
@@ -153,6 +153,21 @@ For CI/CD workflows, pin all external dependencies (GitHub Actions, Docker image
 | Code coverage | [test-coverage.md](ci/test-coverage.md) |
 | Global setup/teardown | [global-setup-teardown.md](ci/global-setup-teardown.md) |
 | Multi-project config | [projects-and-dependencies.md](ci/projects-and-dependencies.md) |
+
+### e2e With TestDino (the Agentic Runner, After the Run)
+
+> For projects that run **e2e** from e2e.com (`e2e.config.ts`, `*.e2e.ts`, `agent.act`), not Playwright Test. e2e ships its own skill for writing, running and fixing tests on one machine (`npx e2e guide <topic>`); use it for those. These guides start where it stops. Pack index: [e2e/SKILL.md](e2e/SKILL.md).
+
+| What you're doing | Guide |
+|---|---|
+| Send e2e results, videos and trace pages somewhere that outlives the CI job | [results-and-artifacts.md](e2e/results-and-artifacts.md) |
+| An e2e test failed in CI and its trace page is not on this machine | [debugging-a-ci-failure.md](e2e/debugging-a-ci-failure.md) |
+| `--shard` across CI jobs, one merged run | [sharding.md](e2e/sharding.md) |
+| Flaky or broken, quarantine, re-run only failures, verify a fix | [flaky-or-broken.md](e2e/flaky-or-broken.md) |
+| What agent steps cost; recordings that stopped replaying | [agent-cost-and-cache-health.md](e2e/agent-cost-and-cache-health.md) |
+| Recordings and screens from simulator, emulator and device runs | [mobile-results.md](e2e/mobile-results.md) |
+| Owners and tickets for `e2e explore` and bug bash findings | [explore-findings.md](e2e/explore-findings.md) |
+| Link e2e tests to test cases from the feature map | [feature-map-to-test-cases.md](e2e/feature-map-to-test-cases.md) |
 
 ### Specialized Topics
 

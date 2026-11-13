@@ -39,9 +39,9 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Playwright](https://img.shields.io/badge/Playwright-1.64%2B-2EAD33.svg)](https://playwright.dev)
-[![Guides](https://img.shields.io/badge/guides-79-blue.svg)](SKILL.md)
+[![Guides](https://img.shields.io/badge/guides-87-blue.svg)](SKILL.md)
 
-Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **79 guides** with TypeScript examples throughout and JavaScript in most core guides.
+Production-tested Playwright guides for E2E, API, component, visual, accessibility, and security testing, plus CI/CD, CLI automation, trace-report debugging, page objects, and migration. **87 guides** with TypeScript examples throughout and JavaScript in most core guides. 8 of them are for teams that also run [e2e](https://e2e.com), the agentic test runner: they cover what happens to its results after the run.
 
 These are [Agent Skills](https://docs.claude.com/en/docs/claude-code/skills) — Markdown guides an AI coding agent loads on demand. Install them with the `skills` CLI and your agent pulls the right guide when you ask it to write, debug, or scale Playwright tests. [SKILL.md](SKILL.md) is the canonical index the agent reads, including the Golden Rules and architecture-decision guides.
 
@@ -67,7 +67,10 @@ npx skills add testdino-hq/playwright-skill/ci
 npx skills add testdino-hq/playwright-skill/pom
 npx skills add testdino-hq/playwright-skill/migration
 npx skills add testdino-hq/playwright-skill/playwright-cli
+npx skills add testdino-hq/playwright-skill/e2e
 ```
+
+The `e2e` pack's skill is named `e2e-testdino`, not `e2e`, so it does not collide with the `e2e` skill that e2e installs itself.
 
 > 🎬 Watch the installation guide
 [![Watch the installation guide](https://img.youtube.com/vi/8dRCJZ_we0s/maxresdefault.jpg)](https://www.youtube.com/watch?v=8dRCJZ_we0s)
@@ -83,6 +86,7 @@ npx skills add testdino-hq/playwright-skill/playwright-cli
 | **playwright-cli** | 10 | CLI browser automation, screenshots, tracing, session management, device emulation |
 | **pom** | 2 | Page Object Model patterns, POM vs fixtures vs helpers |
 | **migration** | 2 | Migrating from Cypress, migrating from Selenium |
+| **e2e** | 8 | For suites on e2e, the agentic runner: results and artifacts from CI, debugging a CI failure from its trace page, merged shards, flake verdicts and quarantine, agent cost and replay cache health, device recordings, explore findings, test case links |
 
 ## Golden Rules
 
@@ -209,6 +213,21 @@ For **frontend engineers writing the app** — make components reliably locatabl
 | [test-coverage.md](ci/test-coverage.md) | Code coverage collection |
 | [global-setup-teardown.md](ci/global-setup-teardown.md) | One-time setup/teardown |
 | [projects-and-dependencies.md](ci/projects-and-dependencies.md) | Multi-project config, dependencies |
+
+## e2e With TestDino Skills
+
+For teams running [e2e](https://e2e.com), the agentic test runner, beside or instead of Playwright. e2e ships its own skill for writing, running and fixing tests on one machine, and these guides never repeat it. They cover what a test runner on one machine cannot know: results from CI, history across runs, and evidence an agent can fetch from somewhere else. Results reach TestDino through the [`@testdino/e2e`](https://www.npmjs.com/package/@testdino/e2e) reporter.
+
+| Guide | Description |
+|---|---|
+| [results-and-artifacts.md](e2e/results-and-artifacts.md) | Add the reporter, what uploads and when, the 50 MB and 40-second limits, tags, keeping media local |
+| [debugging-a-ci-failure.md](e2e/debugging-a-ci-failure.md) | Fetch the trace page and screen at failure of a CI run, find what changed, fix locally, verify the fix |
+| [sharding.md](e2e/sharding.md) | `--shard` across CI jobs as one run, split mode, what each shard still does alone |
+| [flaky-or-broken.md](e2e/flaky-or-broken.md) | Flake verdict before paying for reruns, quarantine through `testdino-e2e run`, re-run only failures |
+| [agent-cost-and-cache-health.md](e2e/agent-cost-and-cache-health.md) | Cost per test and stale recordings from `report.json`, a pull request against main, when to turn on `--strict-cache` |
+| [mobile-results.md](e2e/mobile-results.md) | Device recordings under the upload limits, hosted device links, one device's failures |
+| [explore-findings.md](e2e/explore-findings.md) | Turn verified explore and bug bash findings into uploaded repro runs, tickets and sessions |
+| [feature-map-to-test-cases.md](e2e/feature-map-to-test-cases.md) | Link e2e tests to test cases so the feature map's coverage is shared |
 
 ## Playwright CLI Skills
 
