@@ -941,3 +941,4 @@ My test is flaky. What do I do?
 - [core/configuration.md](configuration.md) -- retry, timeout, and trace configuration
 - [core/debugging.md](debugging.md) -- trace viewer, UI mode, and Inspector for diagnosing failures
 - [core/common-pitfalls.md](common-pitfalls.md) -- common mistakes that cause flakiness
+- [e2e/flaky-or-broken.md](../e2e/flaky-or-broken.md) -- flake verdicts and quarantine for suites on e2e, the agentic runner, where a retry also re-runs agent steps against the model

@@ -6,6 +6,8 @@ The `npx playwright trace` command family lets you interrogate a trace archive t
 
 This is the **post-mortem** interface — you already have a `trace.zip`. For *recording* traces and the interactive `--debug=cli` flow against a live browser, see [../playwright-cli/tracing-and-debugging.md](../playwright-cli/tracing-and-debugging.md). For the broader debugging workflow (UI mode, inspector), see [debugging.md](debugging.md).
 
+**Not for e2e, the agentic test runner.** Since e2e 0.19.0 its `trace` setting writes a Markdown trace page per test, not a Playwright `trace.zip`, so none of the commands below apply. For an e2e failure from CI, see [../e2e/debugging-a-ci-failure.md](../e2e/debugging-a-ci-failure.md).
+
 ## CLI vs GUI
 
 | Situation | Use |
