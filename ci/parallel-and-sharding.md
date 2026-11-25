@@ -413,6 +413,25 @@ More shards than test files only wastes CI machines: the extra shards pass with 
     path: all-blob-reports
 ```
 
+**Cause 2: two runs in one job wrote to the same blob folder.** The blob reporter empties its output directory before it writes, even when the new report has a different file name. A job that runs `playwright test` twice into `blob-report/` (two projects one after another, or a `--last-failed` rerun step) keeps only the last run's report, and the merged report silently loses the earlier tests.
+
+**Fix**: give each run its own output directory *and* file name, then collect the zips into one folder. `merge-reports` does not read subfolders, so merging `blob-report/` itself fails with "No report files found".
+
+```typescript
+// playwright.config.ts
+reporter: [['blob', {
+  outputDir: `blob-report/${process.env.RUN_ID}`,
+  fileName: `report-${process.env.RUN_ID}.zip`,
+}]],
+```
+
+```bash
+RUN_ID=main npx playwright test --project=chromium
+RUN_ID=rerun npx playwright test --project=chromium --last-failed
+mkdir -p all-blob-reports && cp blob-report/*/*.zip all-blob-reports/
+npx playwright merge-reports --reporter=html all-blob-reports
+```
+
 ### Worker-scoped fixture not shared -- recreated per test
 
 **Cause**: Missing `{ scope: 'worker' }` option, or the fixture depends on a test-scoped fixture.

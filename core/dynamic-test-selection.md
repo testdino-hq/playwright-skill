@@ -136,6 +136,8 @@ export default QuarantineReporter;
 const key = (t: TestCase) => `${t.location.file}::${t.titlePath().join(' > ')}`;
 ```
 
+Do not key on `line:column`. Columns can shift between releases. For example, 1.65 changed test locations in CommonJS projects, so the same test reported as `a.spec.ts:2:5` on 1.64 is `a.spec.ts:2:1` on 1.65.
+
 ### Pattern 3: Isolated Retries (Playwright 1.62+)
 
 The default retry runs immediately, in the same worker, with whatever state that worker accumulated. That is the worst possible environment for diagnosing a flaky failure, because the retry inherits the conditions that may have caused it.
