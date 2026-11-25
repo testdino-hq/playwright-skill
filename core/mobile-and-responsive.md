@@ -1156,6 +1156,8 @@ for (const { name, device } of orientations) {
 **Use when**: Simulating real-world mobile conditions -- slow 3G networks, underpowered CPUs. Critical for testing loading states, skeleton screens, and timeout handling.
 **Avoid when**: Testing functional correctness only. Performance throttling slows down your test suite significantly.
 
+Since 1.65, `cdpSession.send()` takes a third argument with `timeout` and `signal`, so a CDP call that never answers fails fast instead of hanging until the test timeout: `await cdpSession.send('Emulation.setCPUThrottlingRate', { rate: 4 }, { timeout: 5000 })`.
+
 #### TypeScript
 
 ```typescript

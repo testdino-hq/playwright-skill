@@ -597,6 +597,30 @@ module.exports = defineConfig({
 });
 ```
 
+### Pattern 7: Running the Test Runner Under Bun (Playwright 1.65+)
+
+**Use when**: The project already uses Bun as its runtime and you want tests to run on it too.
+**Avoid when**: You rely on watch mode, `--tsconfig`, custom ESM loaders, or test console output in traces. Keep Node.js for those.
+
+Pass `--bun`. Without it, `bunx playwright test` still runs the test runner on Node.js:
+
+```bash
+bunx --bun playwright test
+```
+
+Bun transpiles the test files itself, so Playwright's Babel step and compilation cache are not used. Differences from Node.js:
+
+- No watch mode: UI mode does not re-run tests on file changes, and `--only-changed` does not follow imports.
+- `--tsconfig` and the JSX options in `tsconfig.json` have no effect. Custom ESM loaders are not supported.
+- Stack traces have no async frames, and API names lose the class name (`click` instead of `locator.click`), which changes some step titles and error messages.
+- Test console output does not reach the trace or UI mode.
+
+**Transpile cache location (1.65+)**: on Node.js, Playwright keeps transpiled test files in the system temp directory. On a Linux machine shared by several users, set `PLAYWRIGHT_TRANSFORM_CACHE_DIR` to a per-user directory:
+
+```bash
+PLAYWRIGHT_TRANSFORM_CACHE_DIR=~/.cache/playwright-transform npx playwright test
+```
+
 ## Decision Guide
 
 ### Which Timeout to Adjust

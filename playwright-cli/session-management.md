@@ -240,6 +240,18 @@ playwright-cli -s=visible open https://example.com --headed
 playwright-cli -s=extension attach --extension
 ```
 
+**Ignore hidden duplicates**: pages that keep hidden copies of a control (a cached mobile menu, an off-screen modal) make CSS and text targets fail with a strict-mode violation. With `locateOnlyVisible` in the config file, every target only matches visible elements, as if it ended with `.filter({ visible: true })`. `first()`, `last()` and `nth()` then pick among the visible matches.
+
+```json
+{ "browser": { "contextOptions": { "locateOnlyVisible": true } } }
+```
+
+```bash
+playwright-cli -s=app open https://app.example.com --config=cli.config.json
+```
+
+This is a CLI and MCP config option. In `@playwright/test` the matching context option arrives in 1.66, so do not put it in `playwright.config.ts` on 1.65.
+
 ## Environment Variable
 
 Set a default session name so all commands use it without the `-s` flag:

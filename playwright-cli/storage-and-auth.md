@@ -151,6 +151,17 @@ playwright-cli -s=user state-load user-auth.json
 playwright-cli -s=user goto https://app.example.com/profile
 ```
 
+### Two Signed-In Users in One Session (Isolated Contexts)
+
+Separate sessions mean separate browsers. To drive both sides of a chat, an approval flow or a shared document from one session, open a tab with `--isolated-context=<name>`. Tabs with the same name share cookies and storage, and tabs with different names stay isolated from each other and from the default context. Cookie and storage commands act on the current tab's context.
+
+```bash
+playwright-cli -s=collab open https://app.example.com/login                          # tab 0: sign in as user A
+playwright-cli -s=collab tab-new https://app.example.com/login --isolated-context=user-b  # tab 1: sign in as user B
+playwright-cli -s=collab cookie-list        # cookies of user B's context only
+playwright-cli -s=collab tab-select 0       # back to user A
+```
+
 ### OAuth / SSO Authentication
 
 For OAuth flows that involve redirects and popups:
@@ -231,6 +242,12 @@ playwright-cli cookie-set remember_me token123 --expires=1735689600
 ```bash
 playwright-cli cookie-delete session_id
 playwright-cli cookie-delete __cf_bm
+```
+
+`cookie-delete <name>` removes every cookie with that name, on every domain and path. To sign out of one site without touching same-named cookies elsewhere, scope it:
+
+```bash
+playwright-cli cookie-delete session_id --domain=app.example.com --path=/
 ```
 
 ### Clear All Cookies
@@ -485,3 +502,4 @@ playwright-cli reload
 - **In-memory sessions are safer** — default sessions don't persist to disk, reducing exposure
 - **Rotate saved states** — auth tokens expire; regenerate state files regularly
 - **Avoid saving state on shared machines** — storage state files contain session tokens and personal data
+- **Redact tokens in printed URLs** — OAuth `code` and `access_token` values minted at runtime appear in every `Page URL:` line. Add `"redactUrlParams": ["access_token", "code"]` to `.playwright/cli.config.json` and those query and fragment values print as `<redacted>`. This keeps tokens out of an agent's context and logs, but it is not a security boundary: the page still has the real values.

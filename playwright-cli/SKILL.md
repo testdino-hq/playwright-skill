@@ -121,6 +121,7 @@ playwright-cli dialog-dismiss                # Dismiss/cancel dialog
 ```bash
 playwright-cli tab-list                      # List all open tabs
 playwright-cli tab-new [url]                 # Open new tab
+playwright-cli tab-new [url] --isolated-context=user-b  # Tab with its own cookies/storage (second signed-in user)
 playwright-cli tab-select <index>            # Switch to tab by index
 playwright-cli tab-close [index]             # Close tab (current or by index)
 ```
@@ -145,7 +146,8 @@ playwright-cli state-load <file.json>        # Restore saved state
 playwright-cli cookie-list [--domain=...]    # List cookies
 playwright-cli cookie-get <name>             # Get specific cookie
 playwright-cli cookie-set <name> <value> [opts]  # Set a cookie
-playwright-cli cookie-delete <name>          # Delete a cookie
+playwright-cli cookie-delete <name>          # Delete a cookie (every domain/path with that name)
+playwright-cli cookie-delete <name> --domain=example.com --path=/  # Delete only that domain/path
 playwright-cli cookie-clear                  # Clear all cookies
 playwright-cli localstorage-list             # List localStorage items
 playwright-cli localstorage-get <key>        # Get localStorage value
@@ -171,8 +173,11 @@ playwright-cli unroute                       # Remove all routes
 ### DevTools & Debugging
 
 ```bash
-playwright-cli console [level]              # Show console messages
-playwright-cli requests                     # Show network requests
+playwright-cli console [level]              # Show console messages since the last navigation
+playwright-cli requests                     # Show network requests since the last navigation
+playwright-cli console --all                # Include messages from earlier pages in a multi-page flow
+playwright-cli requests --all               # Include requests from earlier pages (numbers stay stable)
+playwright-cli find "Save" --max-results=5  # Cap snapshot search matches; reports the total
 playwright-cli tracing-start                # Start trace recording
 playwright-cli tracing-stop                 # Stop and save trace
 playwright-cli run-code "async page => {}"  # Execute Playwright API code
@@ -198,6 +203,9 @@ playwright-cli open --persistent            # Persist profile to disk
 playwright-cli open --profile=/path         # Custom profile directory
 playwright-cli open --config=config.json    # Use config file
 playwright-cli attach --extension           # Connect via extension
+playwright-cli attach --extension=chrome --session=docs-review --session-color=blue  # Named, colored tab group
+playwright-cli attach --extension=chrome --no-tab-group  # Leave your tab groups untouched
+playwright-cli -s=docs-review detach --close-tabs        # Close the session's tabs, then detach
 ```
 
 ## Guide Index

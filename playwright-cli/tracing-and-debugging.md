@@ -165,6 +165,8 @@ playwright-cli console info          # Only info messages
 playwright-cli console log           # Only log messages
 ```
 
+`console` shows messages since the last navigation. In a multi-page flow (login → redirect → dashboard), a warning on the first page is gone by the time you check, so add `--all` to include messages from earlier pages: `playwright-cli console error --all`.
+
 ### Common Debugging Pattern
 
 ```bash
@@ -208,11 +210,14 @@ playwright-cli run-code "async page => {
 
 ## Network Monitoring
 
-View all network requests made by the page:
+View the network requests made since the last navigation:
 
 ```bash
 playwright-cli requests
+playwright-cli requests --all     # also earlier pages of the flow (up to 200 retained requests)
 ```
+
+Request numbers stay stable across navigations, so `playwright-cli request 5` still points to the same request after the flow moves on.
 
 ### Watch Network in Real-Time
 
