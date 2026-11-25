@@ -405,6 +405,24 @@ module.exports = defineConfig({
 
 ---
 
+### "element is inert"
+
+**Cause**: A call-log line under an action timeout (1.65+). The target has the `inert` attribute or sits inside an element that has it. Apps set `inert` on background content while a modal, drawer or loading overlay is open. `click`, `check`, `tap`, `fill`, `clear` and `selectOption` wait for the element to stop being inert. Before 1.65, the same `click` reported `<body> intercepts pointer events`, and `fill` silently typed nothing.
+
+**Fix**: Finish or close whatever made the content inert before acting on it.
+
+```typescript
+await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+await expect(page.getByRole('dialog')).toBeHidden();
+await page.getByRole('button', { name: 'Submit' }).click();
+```
+
+If the element should be interactive at that point, the app forgot to remove `inert`, and the test has found a real bug.
+
+**Related**: [core/assertions-and-waiting.md](assertions-and-waiting.md)
+
+---
+
 ### "element is outside of the viewport"
 
 **Cause**: A call-log line under an action timeout: after scrolling, the element's click point is still outside the viewport. With `force: true` it is thrown immediately as `Element is outside of the viewport`.
@@ -689,6 +707,14 @@ await page.frameLocator('#my-iframe').getByRole('button').click();
 
 ---
 
+### "page.goto: NS_BINDING_ABORTED" (Firefox only)
+
+**Cause**: A [known Firefox limitation](https://github.com/microsoft/playwright/issues/20749): a navigation that the page starts on its own, such as a client-side redirect right after load, interrupts the `page.goto()` that is still in progress.
+
+**Fix**: Call `page.goto()` with the URL the page ends up on, so that no redirect runs during the call. If the redirect is the behavior under test, check it in Chromium or WebKit, or start it from a user action and assert the destination with `await page.waitForURL(...)`.
+
+---
+
 ## Test Framework Errors
 
 ---
@@ -834,7 +860,7 @@ expect(sanitized).toMatchSnapshot('dashboard-content.txt');
 ```bash
 npx playwright test --update-snapshots=missing
 # Linux baselines from macOS/Windows: run inside the official image
-docker run --rm --init --ipc=host -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.64.0-noble npx playwright test --update-snapshots
+docker run --rm --init --ipc=host -v $(pwd):/work -w /work mcr.microsoft.com/playwright:v1.65.1-noble npx playwright test --update-snapshots
 ```
 
 **Related**: [core/visual-regression.md](visual-regression.md)
@@ -1022,6 +1048,42 @@ const test = base.extend({
 ```
 
 **Related**: [core/fixtures-and-hooks.md](fixtures-and-hooks.md)
+
+---
+
+### "TypeError: Cannot read properties of undefined (reading 'getByRole')" in a page object
+
+**Cause**: Since 1.65 Playwright compiles class fields according to `useDefineForClassFields` in `tsconfig.json`, the same as `tsc`. It is on when `target` is `ES2022` or later and when `target` is not set. A field initializer then runs before the constructor's parameter properties are assigned, so `this.page` is still `undefined`:
+
+```typescript
+// BAD on 1.65+
+class LoginPage {
+  readonly submit = this.page.getByRole('button', { name: 'Submit' });
+  constructor(private readonly page: Page) {}
+}
+```
+
+**Fix**: Assign the field in the constructor. Or, to keep the old behavior for the whole suite, set `"useDefineForClassFields": false` in `tsconfig.json`.
+
+```typescript
+// GOOD
+class LoginPage {
+  readonly submit: Locator;
+  constructor(private readonly page: Page) {
+    this.submit = page.getByRole('button', { name: 'Submit' });
+  }
+}
+```
+
+**Related**: [pom/page-object-model.md](../pom/page-object-model.md)
+
+---
+
+### "Error: Cannot find module './styles.css'"
+
+**Cause**: Since 1.65, `.css`, `.less` and `.scss` imports in test files load as empty modules instead of being removed, so the imported file must exist. A test file that imports a stylesheet that was deleted or never existed (often copied from a component file) used to pass and now fails to load.
+
+**Fix**: Remove the stylesheet import from the test file, or fix its path.
 
 ---
 
@@ -1293,7 +1355,7 @@ npx playwright install --with-deps chromium
 
 # If using Docker, use the official Playwright image
 # Dockerfile
-FROM mcr.microsoft.com/playwright:v1.64.0-noble
+FROM mcr.microsoft.com/playwright:v1.65.1-noble
 WORKDIR /app
 COPY . .
 RUN npm ci
@@ -1309,7 +1371,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.64.0-noble
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
       options: --shm-size=2gb
 
 # Docker run — increase shared memory
@@ -1341,6 +1403,16 @@ module.exports = defineConfig({
 ```
 
 **Related**: [ci/ci-github-actions.md](../ci/ci-github-actions.md), [ci/docker-and-containers.md](../ci/docker-and-containers.md)
+
+---
+
+### "Error: No tests found." in a sharded CI job
+
+**Cause**: Since 1.65 a sharded run fails when no test matches across all shards, usually because of a typo in `--grep`, a file filter or `testDir`. Before 1.65 sharded jobs skipped this check and passed with zero tests. A single empty shard does not cause it.
+
+**Fix**: Correct the filter, or pass `--pass-with-no-tests` when matching nothing is legitimate.
+
+**Related**: [ci/parallel-and-sharding.md](../ci/parallel-and-sharding.md)
 
 ---
 

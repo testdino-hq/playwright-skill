@@ -255,6 +255,16 @@ Tests holding the same lock name never run concurrently, regardless of which fil
 test.describe.configure({ lock: 'user-settings' });
 ```
 
+**Running a test with nothing else running (1.65+)**: the built-in `-exclusive-` lock waits until every other running test finishes, runs the test alone, then lets the rest continue in parallel. Use it for a test that disturbs the whole environment, such as restarting the app server or flushing a shared cache:
+
+```javascript
+test('restart the server', { lock: '-exclusive-' }, async () => {
+  // no other test runs while this one is running
+});
+```
+
+An exclusive test stalls every worker while it runs, so keep these rare and short.
+
 **Choose the lock name for the resource, not the feature.** `'user-settings'` is right if that is the row being mutated. Naming it after the spec file recreates `describe.serial()` with extra steps.
 
 **A lock is not isolation.** It prevents overlap; it does not reset state between holders. Each test still has to leave the resource in a state the next holder can use, or seed what it needs. See Pattern 5 above.
@@ -370,17 +380,17 @@ test('create order', async ({ page, request }, testInfo) => {
 });
 ```
 
-### Shard produces no tests: "No tests found"
+### Sharded run fails with "No tests found" (1.65+)
 
-**Cause**: Shard count exceeds the number of test files. A shard gets zero files.
+**Cause**: No test matches across *all* shards, usually a typo in `--grep`, a file filter or `testDir`. Before 1.65 a sharded run skipped this check, so such a job passed with zero tests. An empty shard is not the cause: when the run has tests, a shard that gets none still passes.
 
-**Fix**: Reduce shard count to at most the number of test files:
+**Fix**: Correct the filter. If a job may legitimately match nothing, for example a tag-filtered job on a branch without tagged tests, pass `--pass-with-no-tests`:
 
 ```bash
-# If you have 10 test files, max 10 shards
-npx playwright test --shard=1/10  # OK
-npx playwright test --shard=1/20  # Some shards will be empty
+npx playwright test --grep @payments --shard=1/4 --pass-with-no-tests
 ```
+
+More shards than test files only wastes CI machines: the extra shards pass with zero tests. Keep the shard count at most the number of test files (or tests, with `fullyParallel: true`).
 
 ### Merged report missing some test results
 

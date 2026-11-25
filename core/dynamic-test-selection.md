@@ -60,6 +60,21 @@ export default QuarantineReporter;
 
 **Why this beats `--grep`**: the hook sees `TestCase` objects, so you can match on file path, title path, tags, annotations, or project — not just a title regex. Nothing needs escaping, and a renamed test fails loudly at lookup instead of silently falling out of a pattern.
 
+**Check the execution mode before marking one test (1.65+).** `testRun.mode(suite)` returns `'serial'`, `'parallel'` or `'default'` for a suite. In a serial group, one failure stops the tests after it, so marking a single test there affects the whole group. For example, a `fail`-marked test that unexpectedly passes counts as a failure, and the rest of the group does not run. Mark the whole serial group instead:
+
+```js
+async preprocess({ suite, testRun }) {
+  for (const test of suite.allTests()) {
+    if (!isQuarantined(test)) continue;
+    const group = test.parent;
+    if (group.type === 'describe' && testRun.mode(group) === 'serial')
+      group.allTests().forEach(t => testRun.skip(t));
+    else
+      testRun.fail(test);
+  }
+}
+```
+
 ### Pattern 2: Driving Selection From an External Flaky List
 
 The useful version of a quarantine is not a hardcoded array. It is a list computed from run history, refreshed on every CI run.

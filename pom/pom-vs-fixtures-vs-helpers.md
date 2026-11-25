@@ -802,11 +802,15 @@ class LoginPage {
 ```typescript
 // BAD: no methods, no encapsulation — just a bag of locators
 class LoginPage {
-  emailInput = this.page.getByLabel('Email');
-  passwordInput = this.page.getByLabel('Password');
-  submitButton = this.page.getByRole('button', { name: 'Sign in' });
+  readonly emailInput: Locator;
+  readonly passwordInput: Locator;
+  readonly submitButton: Locator;
 
-  constructor(private page: Page) {}
+  constructor(private page: Page) {
+    this.emailInput = page.getByLabel('Email');
+    this.passwordInput = page.getByLabel('Password');
+    this.submitButton = page.getByRole('button', { name: 'Sign in' });
+  }
 }
 
 // Test still does all the work

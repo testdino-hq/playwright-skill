@@ -186,6 +186,20 @@ await request.clearCookies({ name: 'session-id' });
 
 Practical uses: assert that a login endpoint actually set the session cookie, test an expired-session path by clearing one cookie mid-test, or switch feature-flag cookies between calls without creating a new context.
 
+**Cookie matching follows RFC 6265 (1.65+).** With a URL, `request.cookies(url)` and `context.cookies(url)` no longer return a host-only cookie for a subdomain, and a `Path=/api` cookie no longer matches `/apiv2`. A `Path=/foo/` cookie does not match `/foo`. If an assertion like `expect(await request.cookies(url))` started failing after the upgrade, check the cookie's `Domain` and `Path` against the URL. The old result was the wrong one.
+
+### Query Parameters Merge With the URL (Playwright 1.65+)
+
+A string or `URLSearchParams` value of `params` is now appended to the query that the URL already has. Before 1.65 it **replaced** that query. Object values were already appended.
+
+```javascript
+// GET /api/users?page=2&role=admin on 1.65+; 1.64 sent /api/users?role=admin
+await request.get('/api/users?page=2', { params: new URLSearchParams({ role: 'admin' }) });
+await request.get('/api/users?page=2', { params: 'role=admin' });
+```
+
+If a test relied on `params` overriding the URL's query, remove the query from the URL instead.
+
 ### API Test Structure
 
 **Use when**: Writing dedicated API test suites that do not need a browser.

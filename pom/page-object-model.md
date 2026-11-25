@@ -107,6 +107,26 @@ test('invalid credentials show error', async ({ page }) => {
 });
 ```
 
+**Assign locators in the constructor, not in field initializers (1.65+).** Since 1.65 Playwright compiles class fields according to `useDefineForClassFields` in `tsconfig.json`, the same as `tsc`. It is on when `target` is `ES2022` or later and when `target` is not set. Field initializers then run before the constructor body, so a field that reads a constructor parameter property crashes when the class is constructed:
+
+```typescript
+// BREAKS on 1.65+: TypeError: Cannot read properties of undefined (reading 'getByRole')
+export class LoginPage {
+  readonly submitButton = this.page.getByRole('button', { name: 'Sign in' });
+  constructor(private readonly page: Page) {}
+}
+
+// WORKS on every version: assign in the constructor, as in the example above
+export class LoginPage {
+  readonly submitButton: Locator;
+  constructor(private readonly page: Page) {
+    this.submitButton = page.getByRole('button', { name: 'Sign in' });
+  }
+}
+```
+
+If a large suite uses the field-initializer style and you cannot migrate it yet, set `"useDefineForClassFields": false` in `tsconfig.json` to keep the 1.64 behavior.
+
 ### 2. Component Objects
 
 **Use when**: A UI element (navbar, sidebar, modal, form, table) appears on multiple pages.
@@ -912,6 +932,7 @@ Exposing locators as `readonly` properties for assertions is acceptable (`expect
 | TypeScript error: property does not exist on fixture | Fixture type not declared in `test.extend<>()` generic | Add the POM type to the generic parameter: `test.extend<{ loginPage: LoginPage }>()` |
 | POM methods feel duplicated across similar pages | Multiple pages share the same form structure | Extract a component object for the shared form, compose into each page |
 | `page.goto()` in constructor causes "cannot use await" | Constructors cannot be async | Use static factory method (Pattern 8) |
+| `TypeError: Cannot read properties of undefined (reading 'getByRole')` after upgrading to 1.65 | A field initializer such as `submit = this.page.getByRole(...)` runs before the `constructor(private page: Page)` parameter property is assigned | Assign locators in the constructor (Pattern 1), or set `"useDefineForClassFields": false` in `tsconfig.json` |
 
 ## Related
 

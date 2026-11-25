@@ -1,10 +1,10 @@
 ---
 name: playwright-skill
-description: Current Playwright (1.64) patterns for writing, debugging, and scaling reliable test suites. Use for any Playwright task, even ones you think you know, because the guides cover APIs and CLI flags newer than most training data. Covers writing or fixing tests, locators, a failing or flaky test, a trace.zip or error message, playwright.config and projects, network mocking, auth, visual and accessibility testing, Docker and CI sharding, playwright-cli browser automation, Playwright Test Agents, page objects, migrating from Cypress or Selenium, and QA work: test case design, bug reports from failures, automating manual test cases, and reviewing tests. TypeScript and JavaScript.
+description: Current Playwright (1.65) patterns for writing, debugging, and scaling reliable test suites. Use for any Playwright task, even ones you think you know, because the guides cover APIs and CLI flags newer than most training data. Covers writing or fixing tests, locators, a failing or flaky test, a trace.zip or error message, playwright.config and projects, network mocking, auth, visual and accessibility testing, Docker and CI sharding, playwright-cli browser automation, Playwright Test Agents, page objects, migrating from Cypress or Selenium, and QA work: test case design, bug reports from failures, automating manual test cases, and reviewing tests. TypeScript and JavaScript.
 license: MIT
 metadata:
   author: testdino.com
-  version: "2.8.0"
+  version: "2.9.0"
 ---
 
 # Playwright Skill
@@ -13,9 +13,9 @@ metadata:
 
 **79 reference guides** covering the full Playwright surface: selectors, assertions, fixtures, page objects, network mocking, auth, visual regression, accessibility, API testing, CI/CD, debugging, and more.
 
-**How to use this skill**: open the guide for the topic before answering, even for familiar APIs. Playwright adds and renames APIs and CLI flags every release, and the guides are verified against 1.64. Guides tag newer APIs with the release that added them, e.g. `(1.62+)`; check the project's version (`npx playwright --version`) before using one.
+**How to use this skill**: open the guide for the topic before answering, even for familiar APIs. Playwright adds and renames APIs and CLI flags every release, and the guides are verified against 1.65. Guides tag newer APIs with the release that added them, e.g. `(1.62+)`; check the project's version (`npx playwright --version`) before using one.
 
-### Newer APIs (1.59–1.64) You May Not Know
+### Newer APIs (1.59–1.65) You May Not Know
 
 | Need | API | Guide |
 |---|---|---|
@@ -23,9 +23,14 @@ metadata:
 | Element from an aria-snapshot ref | `page.getByRef('e2')` (1.64) | [locators.md](core/locators.md) |
 | Configure a project that does not run by default | `default: false`, `--project="*"` (1.64) | [projects-and-dependencies.md](ci/projects-and-dependencies.md) |
 | Find order-dependent tests | `--shuffle [seed]` (1.64) | [flaky-tests.md](core/flaky-tests.md) |
-| Serialize tests sharing a resource | `{ lock: 'name' }`, `describe.configure({ lock })` (1.63/1.64) | [parallel-and-sharding.md](ci/parallel-and-sharding.md) |
+| Serialize tests sharing a resource; run one test alone | `{ lock: 'name' }`, `describe.configure({ lock })` (1.63/1.64), `{ lock: '-exclusive-' }` (1.65) | [parallel-and-sharding.md](ci/parallel-and-sharding.md) |
+| Page object crashes after upgrading: `Cannot read properties of undefined (reading 'getByRole')` | Field initializers follow `useDefineForClassFields` (1.65, breaking) | [page-object-model.md](pom/page-object-model.md) |
+| Action times out with `element is inert` | Actions wait for non-inert targets (1.65, breaking) | [assertions-and-waiting.md](core/assertions-and-waiting.md) |
+| Report only failures | `failures` reporter, `onlyFailures` for html/json/junit (1.65) | [reporting-and-artifacts.md](ci/reporting-and-artifacts.md) |
+| Run the test runner on Bun | `bunx --bun playwright test` (1.65) | [configuration.md](core/configuration.md) |
+| Sharded job fails with "No tests found" | Empty runs now fail across shards; `--pass-with-no-tests` (1.65, breaking) | [parallel-and-sharding.md](ci/parallel-and-sharding.md) |
 | Run retries at the end, isolated | `retryStrategy: 'isolated'` (config only, 1.62) | [flaky-tests.md](core/flaky-tests.md) |
-| Select or quarantine tests before the run | `reporter.preprocess()` + `testRun.fail()` (1.62) | [dynamic-test-selection.md](core/dynamic-test-selection.md) |
+| Select or quarantine tests before the run | `reporter.preprocess()` + `testRun.fail()` (1.62), `testRun.mode(suite)` (1.65) | [dynamic-test-selection.md](core/dynamic-test-selection.md) |
 | Re-run failures / changed files | `--last-failed`, `--only-changed`, `-x` | [debugging.md](core/debugging.md) |
 | Inspect a `trace.zip` from the terminal | `npx playwright trace ...`, `snapshot --phase` (1.63) | [trace-analysis.md](core/trace-analysis.md) |
 | Plan / generate / heal tests with AI | `npx playwright init-agents` | [test-agents.md](core/test-agents.md) |
@@ -34,7 +39,7 @@ metadata:
 | Scoped HAR recording | `tracing.startHar(path, options)` (1.60) | [network-mocking.md](core/network-mocking.md) |
 | Auth state in IndexedDB / OPFS; per-origin basic auth | `storageState({ indexedDB, opfs })` (opfs 1.63), `httpCredentials: [...]` (1.63) | [authentication.md](core/authentication.md) |
 | Passkeys | `context.credentials`, `signCount` (1.61/1.64) | [auth-flows.md](core/auth-flows.md) |
-| Cookies on an API request context | `request.addCookies()` / `cookies()` (1.64) | [api-testing.md](core/api-testing.md) |
+| Cookies on an API request context; `params` merging | `request.addCookies()` / `cookies()` (1.64); RFC 6265 matching, `params` appended to the URL query (1.65) | [api-testing.md](core/api-testing.md) |
 | Page-registered agent tools | `page.webmcp.tools()` / `callTool()` (1.64) | [webmcp-testing.md](core/webmcp-testing.md) |
 
 ## Security Trust Boundary

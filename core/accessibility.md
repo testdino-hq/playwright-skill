@@ -78,6 +78,16 @@ const summaryTree = await page.getByRole('dialog', { name: 'Checkout' }).ariaSna
 
 Use smaller snapshots for stable assertions. Deep full-tree snapshots are powerful, but they can become brittle if the component structure changes often.
 
+**Unrendered text is no longer in names and snapshots (1.65+).** Text the browser does not render is no longer part of accessible names or aria snapshots. This includes text directly inside a closed `<details>` and shadow-host text that is not assigned to a slot. The same applies to `getByRole(..., { name })`. Existing snapshots that contain such text fail after the upgrade:
+
+```yaml
+# <details><summary>Shipping</summary>Ships in 2 days</details>
+- group: Shipping Ships in 2 days   # 1.64
+- group: Shipping                   # 1.65+
+```
+
+Regenerate the affected baselines with `--update-snapshots`, then review the diff. Every removed string should be text a user cannot see.
+
 **JavaScript**
 ```javascript
 const { test, expect } = require('@playwright/test');

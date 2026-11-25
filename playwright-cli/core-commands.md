@@ -95,6 +95,17 @@ Connect to an existing browser via extension instead of launching a new one:
 playwright-cli attach --extension
 ```
 
+The tabs a session controls go into a Chrome tab group named after the session. When several agents share your browser, name and color each session. A group stays available after a disconnect, so you can select it again on the next `attach`:
+
+```bash
+playwright-cli attach --extension=chrome --session=docs-review --session-color=blue
+playwright-cli attach --extension=chrome --no-tab-group   # leave your existing tab groups alone
+playwright-cli -s=docs-review detach                       # disconnect, keep the tabs open
+playwright-cli -s=docs-review detach --close-tabs          # close the session's tabs, then disconnect
+```
+
+Colors: blue, red, yellow, green, pink, purple, cyan, orange. To keep the controlled tabs and window in the background instead of taking focus, set `"background": true` in the CLI config, or run `attach` with `PLAYWRIGHT_MCP_BACKGROUND=1`. These options need the current Playwright browser extension. Chrome throttles timers in background tabs, so time-sensitive pages run slower there.
+
 ### Closing
 
 ```bash
@@ -382,6 +393,8 @@ Calling a tool is the fastest way to check that it is wired to real app state: c
 ```bash
 playwright-cli find "Sign in"              # Search the snapshot instead of reading all of it
 playwright-cli find --regex "Sign (in|up)"
+playwright-cli find "Item" --max-results=5 # First 5 matches plus the total count, for common terms
+playwright-cli find "Item" --filename=items.md  # Save all matches to a file instead of the response
 playwright-cli generate-locator e5         # Turn a ref into a Playwright locator
 playwright-cli highlight e5                # Overlay a highlight; --hide removes it
 playwright-cli drop e4 --path=./image.png  # Drop files or data onto an element

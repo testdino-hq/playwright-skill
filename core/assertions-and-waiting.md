@@ -490,6 +490,8 @@ Playwright checks before acting:
 | `hover()` | Attached, visible, stable |
 | `pressSequentially()` | Attached only (no actionability checks) |
 
+Since 1.65, `click()`, `check()`, `tap()`, `fill()`, `clear()` and `selectOption()` also wait for the element to be **not inert**, meaning it is neither inside nor carrying the `inert` attribute. This is what makes background content unusable while a modal is open. Before 1.65, `fill()` inside an inert subtree completed without typing anything, and `click()` failed with a misleading `<body> intercepts pointer events`. Now both wait, and they time out with `element is inert` if the element stays inert.
+
 This means you almost never need explicit waits before actions. Do NOT write `await expect(button).toBeVisible()` before `await button.click()` — the click already waits for visibility.
 
 Actions also scroll the target into view, including nested scroll containers. Since 1.62, pass `scroll: 'none'` (for example `click({ scroll: 'none' })`) to skip that; the action then fails if the element is not already in the viewport, which asserts it is reachable without scrolling.

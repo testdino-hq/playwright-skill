@@ -6,17 +6,19 @@
 
 ```bash
 # Official Playwright Docker images
-docker pull mcr.microsoft.com/playwright:v1.64.0-noble     # Ubuntu 24.04, all browsers
-docker pull mcr.microsoft.com/playwright:v1.64.0-jammy      # Ubuntu 22.04, all browsers
-docker pull mcr.microsoft.com/playwright:v1.64.0-resolute   # Ubuntu 26.04, all browsers
+docker pull mcr.microsoft.com/playwright:v1.65.1-noble     # Ubuntu 24.04, all browsers
+docker pull mcr.microsoft.com/playwright:v1.65.1-jammy      # Ubuntu 22.04, all browsers
+docker pull mcr.microsoft.com/playwright:v1.65.1-resolute   # Ubuntu 26.04, all browsers
 
 # Run tests in container
-docker run --rm --init --ipc=host -v $(pwd):/app -w /app mcr.microsoft.com/playwright:v1.64.0-noble \
+docker run --rm --init --ipc=host -v $(pwd):/app -w /app mcr.microsoft.com/playwright:v1.65.1-noble \
   npx playwright test
 
 # Check your Playwright version (must match image tag)
 npx playwright --version
 ```
+
+**Node.js (1.65+)**: the official images ship Node.js 26 (1.64 images shipped 24). Playwright no longer tests on Node.js 20, so use 22, 24 or 26 in custom images and CI runners. If your app's own tooling needs a specific Node version, check it against the image before you bump the tag.
 
 ## Patterns
 
@@ -30,7 +32,7 @@ npx playwright --version
 docker run --rm --init --ipc=host \
   -v $(pwd):/app \
   -w /app \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   bash -c "npm ci && npx playwright test"
 
 # Run with environment variables
@@ -39,7 +41,7 @@ docker run --rm --init --ipc=host \
   -w /app \
   -e CI=true \
   -e BASE_URL=http://host.docker.internal:3000 \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   bash -c "npm ci && npx playwright test"
 
 # Run and extract report
@@ -47,7 +49,7 @@ docker run --rm --init --ipc=host \
   -v $(pwd):/app \
   -w /app \
   -v $(pwd)/playwright-report:/app/playwright-report \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   bash -c "npm ci && npx playwright test"
 ```
 
@@ -58,7 +60,7 @@ docker run --rm --init --ipc=host \
 
 ```dockerfile
 # Dockerfile.playwright
-FROM mcr.microsoft.com/playwright:v1.64.0-noble
+FROM mcr.microsoft.com/playwright:v1.65.1-noble
 
 WORKDIR /app
 
@@ -148,7 +150,7 @@ services:
 
   # Playwright test runner
   e2e:
-    image: mcr.microsoft.com/playwright:v1.64.0-noble
+    image: mcr.microsoft.com/playwright:v1.65.1-noble
     init: true
     ipc: host
     working_dir: /app
@@ -191,14 +193,14 @@ docker run --rm --init --ipc=host \
   -v $(pwd)/playwright-report:/app/playwright-report \
   -v $(pwd)/test-results:/app/test-results \
   -w /app \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   bash -c "npm ci && npx playwright test"
 
 # Method 2: Copy artifacts from a stopped container
 docker run --name e2e-run --init --ipc=host \
   -v $(pwd):/app \
   -w /app \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   bash -c "npm ci && npx playwright test" || true
 
 docker cp e2e-run:/app/playwright-report ./playwright-report
@@ -215,7 +217,7 @@ npx playwright show-report ./playwright-report
 # docker-compose.yml (add to e2e service)
 services:
   e2e:
-    image: mcr.microsoft.com/playwright:v1.64.0-noble
+    image: mcr.microsoft.com/playwright:v1.65.1-noble
     working_dir: /app
     volumes:
       - .:/app
@@ -236,7 +238,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.64.0-noble
+      image: mcr.microsoft.com/playwright:v1.65.1-noble
       options: --ipc=host
     steps:
       - uses: actions/checkout@v7
@@ -251,7 +253,7 @@ jobs:
 ```yaml
 # .gitlab-ci.yml
 test:
-  image: mcr.microsoft.com/playwright:v1.64.0-noble
+  image: mcr.microsoft.com/playwright:v1.65.1-noble
   script:
     - npm ci
     - npx playwright test
@@ -264,7 +266,7 @@ test:
 pipeline {
     agent {
         docker {
-            image 'mcr.microsoft.com/playwright:v1.64.0-noble'
+            image 'mcr.microsoft.com/playwright:v1.65.1-noble'
             args '-u root'
         }
     }
@@ -288,7 +290,7 @@ pipeline {
 // .devcontainer/devcontainer.json
 {
   "name": "Playwright Dev",
-  "image": "mcr.microsoft.com/playwright:v1.64.0-noble",
+  "image": "mcr.microsoft.com/playwright:v1.65.1-noble",
   "postCreateCommand": "npm ci",
   "customizations": {
     "vscode": {
@@ -316,40 +318,40 @@ pipeline {
 
 | Image | Size | Browsers | Base OS |
 |---|---|---|---|
-| `mcr.microsoft.com/playwright:v1.64.0-noble` | ~2 GB | Chromium, Firefox, WebKit | Ubuntu 24.04 |
-| `mcr.microsoft.com/playwright:v1.64.0-jammy` | ~2 GB | Chromium, Firefox, WebKit | Ubuntu 22.04 |
-| `mcr.microsoft.com/playwright:v1.64.0-resolute` | ~2 GB | Chromium, Firefox, WebKit | Ubuntu 26.04 |
+| `mcr.microsoft.com/playwright:v1.65.1-noble` | ~2 GB | Chromium, Firefox, WebKit | Ubuntu 24.04 |
+| `mcr.microsoft.com/playwright:v1.65.1-jammy` | ~2 GB | Chromium, Firefox, WebKit | Ubuntu 22.04 |
+| `mcr.microsoft.com/playwright:v1.65.1-resolute` | ~2 GB | Chromium, Firefox, WebKit | Ubuntu 26.04 |
 | Custom slim (Chromium only) | ~800 MB | Chromium | Depends on base |
 
 ## Security: Pinning Docker Images to Digest
 
-Version tags like `mcr.microsoft.com/playwright:v1.64.0-noble` are mutable — the tag can be updated to point to a different image layer without changing the tag name. This is a supply-chain risk (W012): you may pull different code than you tested against.
+Version tags like `mcr.microsoft.com/playwright:v1.65.1-noble` are mutable — the tag can be updated to point to a different image layer without changing the tag name. This is a supply-chain risk (W012): you may pull different code than you tested against.
 
 **Best practice**: pin images to their immutable content digest.
 
 ```bash
 # Get the digest for a specific tag
-docker pull mcr.microsoft.com/playwright:v1.64.0-noble
-docker inspect --format='{{index .RepoDigests 0}}' mcr.microsoft.com/playwright:v1.64.0-noble
+docker pull mcr.microsoft.com/playwright:v1.65.1-noble
+docker inspect --format='{{index .RepoDigests 0}}' mcr.microsoft.com/playwright:v1.65.1-noble
 # e.g. mcr.microsoft.com/playwright@sha256:abc123...
 
 # Or use skopeo (no pull required):
-skopeo inspect docker://mcr.microsoft.com/playwright:v1.64.0-noble | jq '.Digest'
+skopeo inspect docker://mcr.microsoft.com/playwright:v1.65.1-noble | jq '.Digest'
 ```
 
 **Use digest-pinned references in CI:**
 
 ```yaml
 # Instead of:
-image: mcr.microsoft.com/playwright:v1.64.0-noble
+image: mcr.microsoft.com/playwright:v1.65.1-noble
 
 # Pin to digest (example — verify the actual digest for your version):
-image: mcr.microsoft.com/playwright:v1.64.0-noble@sha256:<digest-from-inspect>
+image: mcr.microsoft.com/playwright:v1.65.1-noble@sha256:<digest-from-inspect>
 ```
 
 ```dockerfile
 # Dockerfile
-FROM mcr.microsoft.com/playwright:v1.64.0-noble@sha256:<digest-from-inspect>
+FROM mcr.microsoft.com/playwright:v1.65.1-noble@sha256:<digest-from-inspect>
 ```
 
 > Digest values are specific to the exact image build. Verify the digest from the official Microsoft Artifact Registry (mcr.microsoft.com) before pinning.
@@ -358,9 +360,9 @@ FROM mcr.microsoft.com/playwright:v1.64.0-noble@sha256:<digest-from-inspect>
 
 | Anti-Pattern | Problem | Do This Instead |
 |---|---|---|
-| Image tag doesn't match `@playwright/test` version | Browser binaries incompatible with Playwright library | Always match: `v1.64.0` image for `@playwright/test@1.64.0` |
-| Using `latest` tag | Unpredictable; image updates can break tests | Pin to exact version: `v1.64.0-noble` |
-| Using only a version tag without digest | Tag is mutable; supply-chain risk if image is silently updated | Pin to digest: `playwright:v1.64.0-noble@sha256:<digest>` |
+| Image tag doesn't match `@playwright/test` version | Browser binaries incompatible with Playwright library | Always match: `v1.65.1` image for `@playwright/test@1.65.1` |
+| Using `latest` tag | Unpredictable; image updates can break tests | Pin to exact version: `v1.65.1-noble` |
+| Using only a version tag without digest | Tag is mutable; supply-chain risk if image is silently updated | Pin to digest: `playwright:v1.65.1-noble@sha256:<digest>` |
 | Installing browsers inside container at runtime | Wastes 60-90 seconds on every run | Use official image (browsers pre-installed) or build custom image with browsers baked in |
 | Running as non-root without configuring sandbox | Chromium sandbox fails with permission errors | Run as root (`-u root`) or disable sandbox (`--no-sandbox` in launch args) |
 | `docker run` without `--ipc=host` | Chromium can run out of shared memory and crash | Add `--ipc=host` (and `--init` to avoid zombie processes), per the official Docker guide |
@@ -379,10 +381,10 @@ FROM mcr.microsoft.com/playwright:v1.64.0-noble@sha256:<digest-from-inspect>
 ```bash
 # Check your version
 npm ls @playwright/test
-# @playwright/test@1.64.0
+# @playwright/test@1.65.1
 
 # Use matching image
-docker pull mcr.microsoft.com/playwright:v1.64.0-noble
+docker pull mcr.microsoft.com/playwright:v1.65.1-noble
 ```
 
 ### Tests fail with "net::ERR_CONNECTION_REFUSED" in docker-compose
@@ -427,13 +429,13 @@ e2e:
 # Run as your host user
 docker run --rm --init --ipc=host -u $(id -u):$(id -g) \
   -v $(pwd):/app -w /app \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   npx playwright test
 
 # Or run as root (simpler, fine for CI)
 docker run --rm --init --ipc=host \
   -v $(pwd):/app -w /app \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   npx playwright test
 ```
 
@@ -445,7 +447,7 @@ docker run --rm --init --ipc=host \
 
 ```dockerfile
 # Dockerfile.playwright
-FROM mcr.microsoft.com/playwright:v1.64.0-noble
+FROM mcr.microsoft.com/playwright:v1.65.1-noble
 WORKDIR /app
 COPY . .
 RUN npm ci
@@ -458,7 +460,7 @@ Or use delegated mount on macOS:
 docker run --rm --init --ipc=host \
   -v $(pwd):/app:delegated \
   -w /app \
-  mcr.microsoft.com/playwright:v1.64.0-noble \
+  mcr.microsoft.com/playwright:v1.65.1-noble \
   bash -c "npm ci && npx playwright test"
 ```
 

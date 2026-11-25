@@ -410,6 +410,7 @@ test('should fail when submitting empty card form', async ({ page }) => {
 | Annotation | Effect | When to use |
 |---|---|---|
 | `test.skip()` | Skips the test entirely | Feature not available in this env/browser |
+| `test.skip('reason')` (1.65+) | Skips from inside the test and records the reason in the `skip` annotation; `fixme`, `fail` and `slow` accept a description-only call too | Unconditional skip that reports should explain |
 | `test.skip(condition, reason)` | Conditional skip | Browser-specific or env-specific tests |
 | `test.fixme()` | Skips and marks as "needs fix" | Known bug, not yet fixed |
 | `test.slow()` | Triples the timeout | Tests with inherently slow workflows |

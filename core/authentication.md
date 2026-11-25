@@ -171,6 +171,15 @@ use: {
 },
 ```
 
+**Proxy credentials do not log in to the site (1.65+).** Before 1.65 the `username`/`password` of the `proxy` option were also sent to the website's own `401` Basic auth challenge. Now they answer only the proxy's `407` challenge. If a staging site behind an authenticated proxy starts returning `401` after the upgrade, add the site's credentials to `httpCredentials`:
+
+```typescript
+use: {
+  proxy: { server: 'http://proxy.corp:3128', username: 'proxy-user', password: process.env.PROXY_PASS! },
+  httpCredentials: { username: 'app', password: process.env.APP_PASS!, origin: 'https://app.staging.example.com' },
+},
+```
+
 ### Global Setup Authentication
 
 **Use when**: You want to authenticate once before the entire test suite runs, then reuse that session everywhere. The standard Playwright-recommended approach.

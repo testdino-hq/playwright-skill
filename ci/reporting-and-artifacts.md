@@ -180,6 +180,29 @@ Other reporter changes worth knowing:
 | `mergeFiles` (HTML) | 1.62 | Groups test blocks in the HTML report: `reporter: [['html', { mergeFiles: true }]]` |
 | Duration waterfall | 1.63 | HTML report shows step durations as a waterfall alongside the step list |
 
+### Pattern 2f: Reports With Only Failures (Playwright 1.65+)
+
+**Use when**: CI logs or report artifacts are dominated by passing tests and the failures are hard to find, or a large suite's HTML report is too big to upload.
+
+The `failures` reporter prints each failure, and each test that passed on retry, as it happens, then a summary. There is no per-test progress output. The `onlyFailures` option of the `html`, `json` and `junit` reporters keeps only tests with unexpected outcomes, flaky tests and interrupted tests:
+
+```typescript
+// playwright.config.ts
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  reporter: process.env.CI
+    ? [['failures'], ['html', { onlyFailures: true, open: 'never' }]]
+    : [['list'], ['html']],
+});
+```
+
+```bash
+npx playwright test --reporter=failures
+```
+
+**Do not** set `onlyFailures` on a JUnit or JSON report that a dashboard uses to count passed tests or compute pass rates. Those consumers need the full result set. Keep a full report for them and add a second, failures-only report for people.
+
 ### Pattern 3: Custom Reporter
 
 **Use when**: Built-in reporters don't meet your needs -- you want Slack notifications, database logging, or custom dashboards.
