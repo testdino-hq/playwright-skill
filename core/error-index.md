@@ -1053,7 +1053,7 @@ const test = base.extend({
 
 ### "TypeError: Cannot read properties of undefined (reading 'getByRole')" in a page object
 
-**Cause**: Since 1.65 Playwright compiles class fields according to `useDefineForClassFields` in `tsconfig.json`, the same as `tsc`. It is on when `target` is `ES2022` or later (including `ESNext`, which `npm init playwright` writes) and when `target` is not set, including when the project has no `tsconfig.json`. A field initializer then runs before the constructor's parameter properties are assigned, so `this.page` is still `undefined`:
+**Cause**: Since 1.65 Playwright compiles class fields according to `useDefineForClassFields` in `tsconfig.json`, the same as `tsc`. It is on when `target` is `ES2022` or later (including `ESNext`) and when `target` is not set, including when the project has no `tsconfig.json`. A field initializer then runs before the constructor's parameter properties are assigned, so `this.page` is still `undefined`:
 
 ```typescript
 // BAD on 1.65+

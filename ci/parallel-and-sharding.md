@@ -420,8 +420,8 @@ More shards than test files only wastes CI machines: the extra shards pass with 
 ```typescript
 // playwright.config.ts
 reporter: [['blob', {
-  outputDir: `blob-report/${process.env.RUN_ID}`,
-  fileName: `report-${process.env.RUN_ID}.zip`,
+  outputDir: `blob-report/${process.env.RUN_ID ?? 'local'}`,
+  fileName: `report-${process.env.RUN_ID ?? 'local'}.zip`,
 }]],
 ```
 
